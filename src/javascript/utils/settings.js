@@ -24,9 +24,9 @@
 
         getFields: function (context, settings) {
             var type_filters = Rally.data.wsapi.Filter.or([
-                {property: 'TypePath', value: 'HierarchicalRequirement'}
+                {property: 'TypePath', value: 'HierarchicalRequirement'},
                 // {property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'},
-                // {property: 'TypePath', value: 'Defect'}
+                {property: 'TypePath', value: 'Defect'}
             ]);
             var filters = [{property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'}];
             return [
@@ -68,7 +68,7 @@
                     xtype: 'rallycombobox',
                     allowBlank: false,
                     autoSelect: false,
-                    //multiSelect: true,
+                    multiSelect: true,
                     shouldRespondToScopeChange: true,
                     fieldLabel: 'Results Type',
                     context: context,

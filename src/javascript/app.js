@@ -8,7 +8,7 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            type: 'hierarchicalrequirement',
+            type: ['hierarchicalrequirement','defect'],
             columnNames: ['FormattedID','Name'],
             showControls: true
         }
@@ -41,9 +41,13 @@ Ext.define("PPIC", {
         return this.gridboard;
     },
     getModelNames: function(){
-        return this.getSetting('type');
+        var models = this.getSetting('type') || [];
+        if (!(models instanceof Array)){
+            models = models.split(',');
+        }
+        return models;  
+        //return ['HierarchicalRequirement','Defect'];     
     },
-
     addComponents: function(){
         this.logger.log('addComponents',this.portfolioItemTypes);
 
@@ -127,20 +131,21 @@ Ext.define("PPIC", {
             requester: this
         }).then({
             success: function (models) {
+                console.log('Models>>>',models);
                 this.models = _.transform(models, function (result, value) {
                     result.push(value);
                 }, []);
 
                 this.modelNames = _.keys(models);
                 //console.log('models>>>>>',_.clone(this.models));
-
+                console.log('this.modelNames>>>',this.modelNames);
                 Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-                    autoLoad: false,
+                    autoLoad: true,
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
                     enableHierarchy: false,
                     fetch: this.columns, //this.columnNames,
-                    models: _.clone(this.models),
+                    models: this.getModelNames(),//_.clone(this.models),
                     pageSize: 25,
                     remoteSort: true,
                     filters: this.getPermanentFilters(),
@@ -152,31 +157,6 @@ Ext.define("PPIC", {
             },
             scope: this
         });
-
-        // Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-        //     models: ['userstory','defect'],
-        //     autoLoad: true,
-        //     enableHierarchy: false
-        // }).then({
-        //     success: this.addGridBoard,
-        //     scope: this
-        // });
-
-        // Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-        //     autoLoad: false,
-        //     childPageSizeEnabled: true,
-        //     context: this.getContext().getDataContext(),
-        //     enableHierarchy: true,
-        //     fetch: this.columns, //this.columnNames,
-        //     models: ['userstory','defect'],
-        //     pageSize: 25,
-        //     remoteSort: true,
-        //     filters: this.getPermanentFilters(),
-        //     root: {expanded: true}
-        // }).then({
-        //     success: this.addGridBoard,
-        //     scope: this
-        // });
 
     },
     getPermanentFilters: function () {
@@ -209,8 +189,10 @@ Ext.define("PPIC", {
                 return filter;
             }
         }
-
+        console.log('model for filters >>>',this.models);
         var invalidQueryFilters = this._findInvalidSubFilters(filter, this.models);
+        console.log('invalidQueryFilters >>>',invalidQueryFilters);
+
         if (invalidQueryFilters.length) {
             filter = [];
             var msg = _.map(invalidQueryFilters, function (filter) {
@@ -291,13 +273,15 @@ Ext.define("PPIC", {
     },
     
     addGridBoard: function (store) {
-
+        console.log('store>>>',store);
         if (this.getGridboard()) {
             this.getGridboard().destroy();
         }
 
+    
+
         //var modelNames =  ['userstory','defect'],
-        var modelNames =  _.clone(this.modelNames),
+        var modelNames =  this.getModelNames(), //_.clone(this.modelNames),
             context = this.getContext(),
             columns = this._getColumns(),
             filters = this.getPermanentFilters();
@@ -305,31 +289,18 @@ Ext.define("PPIC", {
         var gridboard = Ext.create('Rally.ui.gridboard.GridBoard', {
             itemId: 'gridboard',
             toggleState: 'grid',
-            modelNames: modelNames,
+            //modelNames: modelNames,//['hierarchicalrequirement','defect'],
+            store: store,
             context: this.getContext(),
-            plugins:  [
-                { 
-                    ptype: 'rallygridboardaddnew' 
-                },
-                {
+            plugins:[{
                     ptype: 'rallygridboardfieldpicker',
                     headerPosition: 'left',
-                    modelNames: modelNames,
-                    stateful: false,
-                    popoverConfig: {
-                        height: 250
-                    },
-                    fieldPickerConfig: { 
-                        pickerCfg: {
-                            height: 150
-                        } 
-                    },
-                    gridAlwaysSelectedValues: this._getAlwaysSelectedFields(),
                     margin: '3 0 0 10'
-                },{
+                },
+                {
                     ptype: 'rallygridboardcustomfiltercontrol',
                     filterControlConfig: {
-                        modelNames: modelNames,
+                        modelNames: modelNames,//['HierarchicalRequirement','Defect'],
                         stateful: true,
                         stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
                     },
@@ -339,37 +310,6 @@ Ext.define("PPIC", {
                        stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
                     }
                 }
-                // ,
-                // {
-                //          ptype: 'rallygridboardinlinefiltercontrol',
-                //          inlineFilterButtonConfig: {
-                //              modelNames: this.modelNames,
-                //              inlineFilterPanelConfig: {
-                //                  collapsed: false,
-                //                  quickFilterPanelConfig: {
-                //                      fieldNames: Rally.data.ModelTypes.areArtifacts(this.modelNames)
-                //                  }
-                //              }
-                //          }
-                // }
-                // // ,
-                // {
-                //     ptype: 'rallygridboardactionsmenu',
-                //     menuItems: [
-                //         {
-                //             text: 'Print Cards',
-                //             handler: function() {
-                //                 console.log(this.down('rallygridboard').getGridOrBoard());
-                //                 // window.location = Rally.ui.grid.GridCsvExport.buildCsvExportUrl(
-                //                 //     this.down('rallygridboard').getGridOrBoard());
-                //             },
-                //             scope: this
-                //         }
-                //     ],
-                //     buttonConfig: {
-                //         iconCls: 'icon-export'
-                //     }
-                // }
 
             ],
             storeConfig: {
