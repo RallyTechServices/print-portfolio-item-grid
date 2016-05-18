@@ -101,6 +101,7 @@ Ext.define('portfolio-item-selector', {
             });
         } else {
 
+            
             var cb = Ext.create('Rally.ui.combobox.ComboBox',{
                 storeConfig: {
                     model: this.type,
@@ -110,7 +111,7 @@ Ext.define('portfolio-item-selector', {
                     limit: Infinity
                 },
                 allowNoEntry: true,
-                noEntryText: '',
+                noEntryText: '--None--',
                 noEntryValue: 0,
                 itemId: 'cb-portfolioitem',
                 margin: 10,
@@ -118,28 +119,29 @@ Ext.define('portfolio-item-selector', {
                 displayField: 'FormattedID',
                 width: 600,
                 listConfig: {
-                    itemTpl: '<tpl if="ObjectID &gt; 0">{FormattedID}: {Name}</tpl>'
+                    itemTpl: '<tpl>{FormattedID}: {Name}</tpl>'
                 },
                 filterProperties: ['Name','FormattedID','ObjectID'],
-                fieldCls: 'pi-selector',
+                fieldCls: 'pi-selector'
+                ,
                 displayTpl: '<tpl for=".">' +
-                '<tpl if="ObjectID &gt; 0 ">' +
+                '<tpl>' +
                 '{[values["FormattedID"]]}: {[values["Name"]]}' +
                 '</tpl>' +
                 '<tpl if="xindex < xcount">,</tpl>' +
                 '</tpl>'
             });
             //cb.on('ready', this._updatePortfolioItem, this);
-            cb.on('change', this._updateGoButton, this);
+            //cb.on('change', this._updateGoButton, this);
             
             this.add(cb);
-
+            
             this.add({
                 xtype: 'rallybutton',
                 text: this.buttonText,
                 itemId: 'cb-go-button',
                 cls: 'rly-small primary',
-                disabled: true,
+                //disabled: true,
                 margin: 10,
                 listeners: {
                     scope: this,
@@ -149,13 +151,13 @@ Ext.define('portfolio-item-selector', {
         }
     },
     
-    _updateGoButton: function(cb) {
-        if ( !Ext.isEmpty(cb.getValue()) && cb.getValue() > 0 ) {
-            this.down('#cb-go-button').setDisabled(false);
-        } else {
-            this.down('#cb-go-button').setDisabled(true);
-        }
-    },
+    // _updateGoButton: function(cb) {
+    //     if ( !Ext.isEmpty(cb.getValue()) && cb.getValue() > 0 ) {
+    //         this.down('#cb-go-button').setDisabled(false);
+    //     } else {
+    //         this.down('#cb-go-button').setDisabled(true);
+    //     }
+    // },
     
     _requestPorfolioItem : function() {
         // only publish if the go button has been pushed

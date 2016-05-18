@@ -138,7 +138,7 @@ Ext.define("PPIC", {
                     autoLoad: false,
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
-                    enableHierarchy: true,
+                    enableHierarchy: false,
                     fetch: this.columns, //this.columnNames,
                     models: _.clone(this.models),
                     pageSize: 25,
@@ -181,11 +181,17 @@ Ext.define("PPIC", {
     },
     getPermanentFilters: function () {
         var filters = this._getQueryFilter().concat(this._getPortfolioItemFilter());
+        this.logger.log('filter before iteration',filters);
         if(this.iteration){
             iteration_filters  = Ext.create('Rally.data.wsapi.Filter',{property:'Iteration.Name',value:this.iteration.get('Name')});
-            filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
+            if(filters && filters.length > 0){
+                filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
+            }else{
+                filters = iteration_filters;
+            }
+            
         }
-        this.logger.log('getPermanentFilters', filters);
+        this.logger.log('getPermanentFilters', filters.toString());
         return filters;
     },
     _getQueryFilter: function () {
@@ -250,7 +256,7 @@ Ext.define("PPIC", {
     _getPortfolioItemFilter: function(){
         this.logger.log('_getPortfolioItemFilter', this.portfolioItem)
 
-        if (!this.portfolioItem){
+        if (!this.portfolioItem || this.portfolioItem.get('ObjectID') == 0){
             return [];
         }
         //First verify that the selected portfolio item type is an ancestor to the selected grid type.
@@ -334,6 +340,19 @@ Ext.define("PPIC", {
                     }
                 }
                 // ,
+                // {
+                //          ptype: 'rallygridboardinlinefiltercontrol',
+                //          inlineFilterButtonConfig: {
+                //              modelNames: this.modelNames,
+                //              inlineFilterPanelConfig: {
+                //                  collapsed: false,
+                //                  quickFilterPanelConfig: {
+                //                      fieldNames: Rally.data.ModelTypes.areArtifacts(this.modelNames)
+                //                  }
+                //              }
+                //          }
+                // }
+                // // ,
                 // {
                 //     ptype: 'rallygridboardactionsmenu',
                 //     menuItems: [

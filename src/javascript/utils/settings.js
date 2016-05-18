@@ -24,18 +24,18 @@
 
         getFields: function (context, settings) {
             var type_filters = Rally.data.wsapi.Filter.or([
-                {property: 'TypePath', value: 'HierarchicalRequirement'},
-                {property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'},
-                {property: 'TypePath', value: 'Defect'}
+                {property: 'TypePath', value: 'HierarchicalRequirement'}
+                // {property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'},
+                // {property: 'TypePath', value: 'Defect'}
             ]);
             var filters = [{property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'}];
             return [
-                {
-                    name: 'showScopeSelector',
-                    xtype: 'rallycheckboxfield',
-                    fieldLabel: 'Show Scope Selector',
-                    bubbleEvents: ['change']
-                },
+                // {
+                //     name: 'showScopeSelector',
+                //     xtype: 'rallycheckboxfield',
+                //     fieldLabel: 'Show Scope Selector',
+                //     bubbleEvents: ['change']
+                // },
                 {
                     name: 'selectorType',
                     xtype: 'rallycombobox',
@@ -55,19 +55,20 @@
                     },
                     displayField: 'DisplayName',
                     valueField: 'TypePath',
-                    readyEvent: 'ready',
-                    handlesEvents: {
-                        change: function(chk){
-                            this.setDisabled(chk.getValue()!==true);
-                        }
-                    }
+                    readyEvent: 'ready'
+                    // ,
+                    // handlesEvents: {
+                    //     change: function(chk){
+                    //         this.setDisabled(chk.getValue()!==true);
+                    //     }
+                    // }
                 },
                 {
                     name: 'type',
                     xtype: 'rallycombobox',
                     allowBlank: false,
                     autoSelect: false,
-                    multiSelect: true,
+                    //multiSelect: true,
                     shouldRespondToScopeChange: true,
                     fieldLabel: 'Results Type',
                     context: context,
@@ -102,18 +103,18 @@
                         }
                     }
                 },
-                {
-                    xtype: 'rallyfieldpicker',
-                    name: 'columnNames',
-                    autoExpand: true,
-                    modelTypes: ['HierarchicalRequirement'],
-                    alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
-                    handlesEvents: {
-                        typeselected: function(cb){
-                            this.refreshWithNewModelTypes([cb]);
-                        }
-                    }
-                },
+                // {
+                //     xtype: 'rallyfieldpicker',
+                //     name: 'columnNames',
+                //     autoExpand: true,
+                //     modelTypes: ['HierarchicalRequirement'],
+                //     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                //     handlesEvents: {
+                //         typeselected: function(cb){
+                //             this.refreshWithNewModelTypes([cb]);
+                //         }
+                //     }
+                // },
                 { type: 'query' },
                 {
                     name: 'showControls',

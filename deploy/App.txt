@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 16 2016 20:18:39 GMT-0400 (EDT) -->
+    <!--  Build Date: Wed May 18 2016 09:45:42 GMT-0400 (EDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 16 2016 20:18:39 GMT-0400 (EDT)";
-        var CHECKSUM = 72720812900;
+        var APP_BUILD_DATE = "Wed May 18 2016 09:45:42 GMT-0400 (EDT)";
+        var CHECKSUM = 77013861632;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -232,7 +232,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
     singleton: true,
 
     fetchFields: ["FormattedID","Name","Feature","Description",
-        "Release","PlanEstimate",'c_ExtID01QCRequirement','Requirement'],
+        "Release","PlanEstimate",'c_ExtID01QCRequirement','Requirement','Project'],
                 
     displayFields: {
         r1left: { 
@@ -283,6 +283,11 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
                 return 'QC: ' + qc_id;
             }
         },
+        r3middle: {
+            dataIndex: function(recordData) {
+                return recordData.get('Project').Name;
+            }
+        },
         r3right: {
             dataIndex: function(recordData) {
                 return recordData.get('PlanEstimate');
@@ -321,6 +326,9 @@ Ext.define('Rally.technicalservices.CardTemplate',{
                     '<tpl if="this.displayFields.r3left>',
                         '<span class="r3left">{[this.getContent(values, this.displayFields.r3left)]}</span>',
                     '</tpl>',
+                    '<tpl if="this.displayFields.r3middle">',
+                        '<span class="r3middle">{[this.getContent(values, this.displayFields.r3middle)]}</span>',
+                    '</tpl>',                    
                     '<tpl if="this.displayFields.r3right">',
                         '<span class="r3right">{[this.getContent(values, this.displayFields.r3right)]}</span>',
                     '</tpl>',
@@ -901,6 +909,7 @@ Ext.define('portfolio-item-selector', {
             });
         } else {
 
+            
             var cb = Ext.create('Rally.ui.combobox.ComboBox',{
                 storeConfig: {
                     model: this.type,
@@ -910,7 +919,7 @@ Ext.define('portfolio-item-selector', {
                     limit: Infinity
                 },
                 allowNoEntry: true,
-                noEntryText: '',
+                noEntryText: '--None--',
                 noEntryValue: 0,
                 itemId: 'cb-portfolioitem',
                 margin: 10,
@@ -918,28 +927,29 @@ Ext.define('portfolio-item-selector', {
                 displayField: 'FormattedID',
                 width: 600,
                 listConfig: {
-                    itemTpl: '<tpl if="ObjectID &gt; 0">{FormattedID}: {Name}</tpl>'
+                    itemTpl: '<tpl>{FormattedID}: {Name}</tpl>'
                 },
                 filterProperties: ['Name','FormattedID','ObjectID'],
-                fieldCls: 'pi-selector',
+                fieldCls: 'pi-selector'
+                ,
                 displayTpl: '<tpl for=".">' +
-                '<tpl if="ObjectID &gt; 0 ">' +
+                '<tpl>' +
                 '{[values["FormattedID"]]}: {[values["Name"]]}' +
                 '</tpl>' +
                 '<tpl if="xindex < xcount">,</tpl>' +
                 '</tpl>'
             });
             //cb.on('ready', this._updatePortfolioItem, this);
-            cb.on('change', this._updateGoButton, this);
+            //cb.on('change', this._updateGoButton, this);
             
             this.add(cb);
-
+            
             this.add({
                 xtype: 'rallybutton',
                 text: this.buttonText,
                 itemId: 'cb-go-button',
                 cls: 'rly-small primary',
-                disabled: true,
+                //disabled: true,
                 margin: 10,
                 listeners: {
                     scope: this,
@@ -949,13 +959,13 @@ Ext.define('portfolio-item-selector', {
         }
     },
     
-    _updateGoButton: function(cb) {
-        if ( !Ext.isEmpty(cb.getValue()) && cb.getValue() > 0 ) {
-            this.down('#cb-go-button').setDisabled(false);
-        } else {
-            this.down('#cb-go-button').setDisabled(true);
-        }
-    },
+    // _updateGoButton: function(cb) {
+    //     if ( !Ext.isEmpty(cb.getValue()) && cb.getValue() > 0 ) {
+    //         this.down('#cb-go-button').setDisabled(false);
+    //     } else {
+    //         this.down('#cb-go-button').setDisabled(true);
+    //     }
+    // },
     
     _requestPorfolioItem : function() {
         // only publish if the go button has been pushed
@@ -994,18 +1004,18 @@ Ext.define('portfolio-item-selector', {
 
         getFields: function (context, settings) {
             var type_filters = Rally.data.wsapi.Filter.or([
-                {property: 'TypePath', value: 'HierarchicalRequirement'},
-                {property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'},
-                {property: 'TypePath', value: 'Defect'}
+                {property: 'TypePath', value: 'HierarchicalRequirement'}
+                // {property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'},
+                // {property: 'TypePath', value: 'Defect'}
             ]);
             var filters = [{property: 'TypePath', operator: 'contains', value: 'PortfolioItem/'}];
             return [
-                {
-                    name: 'showScopeSelector',
-                    xtype: 'rallycheckboxfield',
-                    fieldLabel: 'Show Scope Selector',
-                    bubbleEvents: ['change']
-                },
+                // {
+                //     name: 'showScopeSelector',
+                //     xtype: 'rallycheckboxfield',
+                //     fieldLabel: 'Show Scope Selector',
+                //     bubbleEvents: ['change']
+                // },
                 {
                     name: 'selectorType',
                     xtype: 'rallycombobox',
@@ -1025,19 +1035,20 @@ Ext.define('portfolio-item-selector', {
                     },
                     displayField: 'DisplayName',
                     valueField: 'TypePath',
-                    readyEvent: 'ready',
-                    handlesEvents: {
-                        change: function(chk){
-                            this.setDisabled(chk.getValue()!==true);
-                        }
-                    }
+                    readyEvent: 'ready'
+                    // ,
+                    // handlesEvents: {
+                    //     change: function(chk){
+                    //         this.setDisabled(chk.getValue()!==true);
+                    //     }
+                    // }
                 },
                 {
                     name: 'type',
                     xtype: 'rallycombobox',
                     allowBlank: false,
                     autoSelect: false,
-                    multiSelect: true,
+                    //multiSelect: true,
                     shouldRespondToScopeChange: true,
                     fieldLabel: 'Results Type',
                     context: context,
@@ -1072,18 +1083,18 @@ Ext.define('portfolio-item-selector', {
                         }
                     }
                 },
-                {
-                    xtype: 'rallyfieldpicker',
-                    name: 'columnNames',
-                    autoExpand: true,
-                    modelTypes: ['HierarchicalRequirement'],
-                    alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
-                    handlesEvents: {
-                        typeselected: function(cb){
-                            this.refreshWithNewModelTypes([cb]);
-                        }
-                    }
-                },
+                // {
+                //     xtype: 'rallyfieldpicker',
+                //     name: 'columnNames',
+                //     autoExpand: true,
+                //     modelTypes: ['HierarchicalRequirement'],
+                //     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                //     handlesEvents: {
+                //         typeselected: function(cb){
+                //             this.refreshWithNewModelTypes([cb]);
+                //         }
+                //     }
+                // },
                 { type: 'query' },
                 {
                     name: 'showControls',
@@ -1497,11 +1508,17 @@ Ext.define("PPIC", {
     },
     getPermanentFilters: function () {
         var filters = this._getQueryFilter().concat(this._getPortfolioItemFilter());
+        this.logger.log('filter before iteration',filters);
         if(this.iteration){
             iteration_filters  = Ext.create('Rally.data.wsapi.Filter',{property:'Iteration.Name',value:this.iteration.get('Name')});
-            filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
+            if(filters && filters.length > 0){
+                filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
+            }else{
+                filters = iteration_filters;
+            }
+            
         }
-        this.logger.log('getPermanentFilters', filters);
+        this.logger.log('getPermanentFilters', filters.toString());
         return filters;
     },
     _getQueryFilter: function () {
@@ -1566,7 +1583,7 @@ Ext.define("PPIC", {
     _getPortfolioItemFilter: function(){
         this.logger.log('_getPortfolioItemFilter', this.portfolioItem)
 
-        if (!this.portfolioItem){
+        if (!this.portfolioItem || this.portfolioItem.get('ObjectID') == 0){
             return [];
         }
         //First verify that the selected portfolio item type is an ancestor to the selected grid type.
@@ -1650,6 +1667,19 @@ Ext.define("PPIC", {
                     }
                 }
                 // ,
+                // {
+                //          ptype: 'rallygridboardinlinefiltercontrol',
+                //          inlineFilterButtonConfig: {
+                //              modelNames: this.modelNames,
+                //              inlineFilterPanelConfig: {
+                //                  collapsed: false,
+                //                  quickFilterPanelConfig: {
+                //                      fieldNames: Rally.data.ModelTypes.areArtifacts(this.modelNames)
+                //                  }
+                //              }
+                //          }
+                // }
+                // // ,
                 // {
                 //     ptype: 'rallygridboardactionsmenu',
                 //     menuItems: [
@@ -1856,7 +1886,7 @@ body {
     text-align: left;
     height: 2.25in;
 }
-
+/*
 .r3{
     border: 1px;
     border-bottom-style: solid;
@@ -1880,6 +1910,43 @@ body {
     padding-left: 0.5em;
     overflow: hidden;
     width: 2.3in;
+}
+*/
+
+.r3 {
+    border: 1px;
+    border-bottom-style: solid;
+    height: 0.5in;
+    padding-left: 0.5em;
+    text-align: center;
+}
+
+.r3left {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    border-right: 1px solid #000;
+    width: 1.75in;
+}
+
+.r3middle {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    font-family: NotoSans, Helvetica, Arial;
+    font-size: 10pt;
+    border-right: 1px solid #000;
+    width: 2.5in;
+}
+
+.r3right {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    width: 0.5in;
 }
 
 .header {
