@@ -97,7 +97,7 @@ body {
     text-align: left;
     height: 2.25in;
 }
-
+/*
 .r3{
     border: 1px;
     border-bottom-style: solid;
@@ -121,6 +121,43 @@ body {
     padding-left: 0.5em;
     overflow: hidden;
     width: 2.3in;
+}
+*/
+
+.r3 {
+    border: 1px;
+    border-bottom-style: solid;
+    height: 0.5in;
+    padding-left: 0.5em;
+    text-align: center;
+}
+
+.r3left {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    border-right: 1px solid #000;
+    width: 1.75in;
+}
+
+.r3middle {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    font-family: NotoSans, Helvetica, Arial;
+    font-size: 10pt;
+    border-right: 1px solid #000;
+    width: 2.5in;
+}
+
+.r3right {
+    display: table-cell;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    overflow: hidden;
+    width: 0.5in;
 }
 
 .header {
