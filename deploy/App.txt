@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 23 2016 08:17:56 GMT-0400 (EDT) -->
+    <!--  Build Date: Mon May 23 2016 11:25:56 GMT-0400 (EDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 23 2016 08:17:56 GMT-0400 (EDT)";
-        var CHECKSUM = 74949525667;
+        var APP_BUILD_DATE = "Mon May 23 2016 11:25:56 GMT-0400 (EDT)";
+        var CHECKSUM = 74949621199;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -1622,7 +1622,13 @@ Ext.define("PPIC", {
             store: store,
             context: this.getContext(),
             plugins:[
-             {
+            {
+                ptype: 'rallygridboardfieldpicker',
+                headerPosition: 'left',
+                margin: '3 0 0 10'
+            }
+            ,
+            {
                  ptype: 'rallygridboardinlinefiltercontrol',
                  inlineFilterButtonConfig: {
                      modelNames: modelNames,
@@ -1633,13 +1639,7 @@ Ext.define("PPIC", {
                          }
                      }
                  }
-             },
-            {
-                ptype: 'rallygridboardfieldpicker',
-                headerPosition: 'left',
-                margin: '3 0 0 10'
-            }
-           
+             }
 
             // ,
             // {
