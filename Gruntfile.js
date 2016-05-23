@@ -94,6 +94,10 @@ module.exports = function(grunt) {
                     variables: config
                 }
         },
+        watch: {
+            files: ['src/javascript/**/*.js', 'src/style/*.css'],
+            tasks: ['deploy']
+        },
         jasmine: {
             fast: {
                 src: 'src/**/*.js',
@@ -348,6 +352,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-templater');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    
     //tasks
     grunt.registerTask('default', ['debug','build','ugly','apikey']);
     
