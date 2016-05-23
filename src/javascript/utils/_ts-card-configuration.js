@@ -48,8 +48,15 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3left: {
             dataIndex: function(recordData) {
-                var qc_id = recordData.get('c_ExtID01QCRequirement') || "";
+                //console.log('>>>>>>>>>',recordData.get('_type'));
+                var qc_id = "";
                 
+                if(recordData.get('_type')=="hierarchicalrequirement"){
+                    qc_id = recordData.get('c_ExtID01QCRequirement');
+                }else if(recordData.get('_type')=="defect"){
+                    qc_id = recordData.get('c_ExtID01QCBug');
+                }
+               
                 return 'QC: ' + qc_id;
             }
         },
