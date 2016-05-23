@@ -273,13 +273,9 @@ Ext.define("PPIC", {
     },
     
     addGridBoard: function (store) {
-        console.log('store>>>',store);
         if (this.getGridboard()) {
             this.getGridboard().destroy();
         }
-
-    
-
         //var modelNames =  ['userstory','defect'],
         var modelNames =  this.getModelNames(), //_.clone(this.modelNames),
             context = this.getContext(),
@@ -289,34 +285,50 @@ Ext.define("PPIC", {
         var gridboard = Ext.create('Rally.ui.gridboard.GridBoard', {
             itemId: 'gridboard',
             toggleState: 'grid',
-            //modelNames: modelNames,//['hierarchicalrequirement','defect'],
             store: store,
             context: this.getContext(),
-            plugins:[{
-                    ptype: 'rallygridboardfieldpicker',
-                    headerPosition: 'left',
-                    margin: '3 0 0 10'
-                },
-                {
-                    ptype: 'rallygridboardcustomfiltercontrol',
-                    filterControlConfig: {
-                        modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-                        stateful: true,
-                        stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-                    },
-                    showOwnerFilter: true,
-                    ownerFilterControlConfig: {
-                       stateful: true,
-                       stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-                    }
-                }
+            plugins:[
+             {
+                 ptype: 'rallygridboardinlinefiltercontrol',
+                 inlineFilterButtonConfig: {
+                     modelNames: modelNames,
+                     inlineFilterPanelConfig: {
+                         collapsed: false,
+                         quickFilterPanelConfig: {
+                             fieldNames: ['Owner', 'ScheduleState']
+                         }
+                     }
+                 }
+             },
+            {
+                ptype: 'rallygridboardfieldpicker',
+                headerPosition: 'left',
+                margin: '3 0 0 10'
+            }
+           
+
+            // ,
+            // {
+            //         ptype: 'rallygridboardcustomfiltercontrol',
+            //         filterControlConfig: {
+            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
+            //             stateful: true,
+            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
+            //         },
+            //         showOwnerFilter: true,
+            //         ownerFilterControlConfig: {
+            //            stateful: true,
+            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
+            //         }
+            //     }
 
             ],
             storeConfig: {
                 filters: filters
-            },
+            }
+            ,
             gridConfig: {
-               // allColumnsStateful: true,
+                // allColumnsStateful: true,
                 stateful: true,
                 stateId: this.getContext().getScopedStateId('portfolio-grid-grid-2'),
                 state: ['columnschanged','viewready','reconfigure'],

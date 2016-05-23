@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Wed May 18 2016 17:19:27 GMT-0400 (EDT) -->
+    <!--  Build Date: Mon May 23 2016 08:17:56 GMT-0400 (EDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Wed May 18 2016 17:19:27 GMT-0400 (EDT)";
-        var CHECKSUM = 73739544753;
+        var APP_BUILD_DATE = "Mon May 23 2016 08:17:56 GMT-0400 (EDT)";
+        var CHECKSUM = 74949525667;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -278,8 +278,15 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3left: {
             dataIndex: function(recordData) {
-                var qc_id = recordData.get('c_ExtID01QCRequirement') || "";
+                //console.log('>>>>>>>>>',recordData.get('_type'));
+                var qc_id = "";
                 
+                if(recordData.get('_type')=="hierarchicalrequirement"){
+                    qc_id = recordData.get('c_ExtID01QCRequirement');
+                }else if(recordData.get('_type')=="defect"){
+                    qc_id = recordData.get('c_ExtID01QCBug');
+                }
+               
                 return 'QC: ' + qc_id;
             }
         },
@@ -1600,13 +1607,9 @@ Ext.define("PPIC", {
     },
     
     addGridBoard: function (store) {
-        console.log('store>>>',store);
         if (this.getGridboard()) {
             this.getGridboard().destroy();
         }
-
-    
-
         //var modelNames =  ['userstory','defect'],
         var modelNames =  this.getModelNames(), //_.clone(this.modelNames),
             context = this.getContext(),
@@ -1616,34 +1619,50 @@ Ext.define("PPIC", {
         var gridboard = Ext.create('Rally.ui.gridboard.GridBoard', {
             itemId: 'gridboard',
             toggleState: 'grid',
-            //modelNames: modelNames,//['hierarchicalrequirement','defect'],
             store: store,
             context: this.getContext(),
-            plugins:[{
-                    ptype: 'rallygridboardfieldpicker',
-                    headerPosition: 'left',
-                    margin: '3 0 0 10'
-                },
-                {
-                    ptype: 'rallygridboardcustomfiltercontrol',
-                    filterControlConfig: {
-                        modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-                        stateful: true,
-                        stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-                    },
-                    showOwnerFilter: true,
-                    ownerFilterControlConfig: {
-                       stateful: true,
-                       stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-                    }
-                }
+            plugins:[
+             {
+                 ptype: 'rallygridboardinlinefiltercontrol',
+                 inlineFilterButtonConfig: {
+                     modelNames: modelNames,
+                     inlineFilterPanelConfig: {
+                         collapsed: false,
+                         quickFilterPanelConfig: {
+                             fieldNames: ['Owner', 'ScheduleState']
+                         }
+                     }
+                 }
+             },
+            {
+                ptype: 'rallygridboardfieldpicker',
+                headerPosition: 'left',
+                margin: '3 0 0 10'
+            }
+           
+
+            // ,
+            // {
+            //         ptype: 'rallygridboardcustomfiltercontrol',
+            //         filterControlConfig: {
+            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
+            //             stateful: true,
+            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
+            //         },
+            //         showOwnerFilter: true,
+            //         ownerFilterControlConfig: {
+            //            stateful: true,
+            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
+            //         }
+            //     }
 
             ],
             storeConfig: {
                 filters: filters
-            },
+            }
+            ,
             gridConfig: {
-               // allColumnsStateful: true,
+                // allColumnsStateful: true,
                 stateful: true,
                 stateId: this.getContext().getScopedStateId('portfolio-grid-grid-2'),
                 state: ['columnschanged','viewready','reconfigure'],
