@@ -361,10 +361,12 @@ Ext.define("PPIC", {
     },
     
     _shouldEnableAddNew: function() {
-        return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
+        return false;
+        //return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
     },
 
     _shouldEnableRanking: function(){
-        return this.getSetting('type').toLowerCase() !== 'task';
+        return false;
+        //return this.getSetting('type').toLowerCase() !== 'task';
     }
 });

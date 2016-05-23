@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 23 2016 15:56:04 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon May 23 2016 16:04:26 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 23 2016 15:56:04 GMT-0700 (PDT)";
-        var CHECKSUM = 53044034260;
+        var APP_BUILD_DATE = "Mon May 23 2016 16:04:26 GMT-0700 (PDT)";
+        var CHECKSUM = 53133539452;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -1382,11 +1382,13 @@ Ext.define("PPIC", {
     },
     
     _shouldEnableAddNew: function() {
-        return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
+        return false;
+        //return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
     },
 
     _shouldEnableRanking: function(){
-        return this.getSetting('type').toLowerCase() !== 'task';
+        return false;
+        //return this.getSetting('type').toLowerCase() !== 'task';
     }
 });
 
