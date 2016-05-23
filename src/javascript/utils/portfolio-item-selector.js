@@ -118,6 +118,7 @@ Ext.define('portfolio-item-selector', {
                 valueField: 'ObjectID',
                 displayField: 'FormattedID',
                 width: 600,
+                fieldLabel: this.fieldLabel || "",
                 listConfig: {
                     itemTpl: '<tpl>{FormattedID}: {Name}</tpl>'
                 },
