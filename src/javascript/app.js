@@ -288,7 +288,13 @@ Ext.define("PPIC", {
             store: store,
             context: this.getContext(),
             plugins:[
-             {
+            {
+                ptype: 'rallygridboardfieldpicker',
+                headerPosition: 'left',
+                margin: '3 0 0 10'
+            }
+            ,
+            {
                  ptype: 'rallygridboardinlinefiltercontrol',
                  inlineFilterButtonConfig: {
                      modelNames: modelNames,
@@ -299,13 +305,7 @@ Ext.define("PPIC", {
                          }
                      }
                  }
-             },
-            {
-                ptype: 'rallygridboardfieldpicker',
-                headerPosition: 'left',
-                margin: '3 0 0 10'
-            }
-           
+             }
 
             // ,
             // {
