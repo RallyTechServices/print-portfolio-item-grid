@@ -111,7 +111,7 @@ Ext.define('portfolio-item-selector', {
                     limit: Infinity
                 },
                 allowNoEntry: true,
-                noEntryText: '--None--',
+                noEntryText: 'No Selection',
                 noEntryValue: 0,
                 itemId: 'cb-portfolioitem',
                 margin: 10,
@@ -131,23 +131,23 @@ Ext.define('portfolio-item-selector', {
                 '<tpl if="xindex < xcount">,</tpl>' +
                 '</tpl>'
             });
-            //cb.on('ready', this._updatePortfolioItem, this);
-            //cb.on('change', this._updateGoButton, this);
+            cb.on('ready', this._updatePortfolioItem, this);
+            cb.on('change', this._updatePortfolioItem, this);
             
             this.add(cb);
             
-            this.add({
-                xtype: 'rallybutton',
-                text: this.buttonText,
-                itemId: 'cb-go-button',
-                cls: 'rly-small primary',
-                //disabled: true,
-                margin: 10,
-                listeners: {
-                    scope: this,
-                    click: this._updatePortfolioItem
-                }
-            });
+//            this.add({
+//                xtype: 'rallybutton',
+//                text: this.buttonText,
+//                itemId: 'cb-go-button',
+//                cls: 'rly-small primary',
+//                //disabled: true,
+//                margin: 10,
+//                listeners: {
+//                    scope: this,
+//                    click: this._updatePortfolioItem
+//                }
+//            });
         }
     },
     
