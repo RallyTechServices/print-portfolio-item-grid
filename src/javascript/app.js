@@ -265,46 +265,34 @@ Ext.define("PPIC", {
             toggleState: 'grid',
             store: store,
             context: this.getContext(),
-            plugins:[
-            {
+            stateful: false,
+            plugins:[{
                 ptype: 'rallygridboardfieldpicker',
                 headerPosition: 'left',
                 margin: '3 0 0 10'
-            }
-            ,
+            },
             {
-                 ptype: 'rallygridboardinlinefiltercontrol',
-                 inlineFilterButtonConfig: {
-                     modelNames: modelNames,
-                     inlineFilterPanelConfig: {
-                         collapsed: false,
-                         quickFilterPanelConfig: {
-                             fieldNames: ['Owner', 'ScheduleState']
-                         }
-                     }
-                 }
-             }
-
-            // ,
-            // {
-            //         ptype: 'rallygridboardcustomfiltercontrol',
-            //         filterControlConfig: {
-            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-            //             stateful: true,
-            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-            //         },
-            //         showOwnerFilter: true,
-            //         ownerFilterControlConfig: {
-            //            stateful: true,
-            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-            //         }
-            //     }
-
-            ],
+                ptype: 'rallygridboardinlinefiltercontrol',
+                inlineFilterButtonConfig: {
+                    stateful: true,
+                    stateId: 'ca.techservices.printgridcards.filter',
+   
+                        modelNames: modelNames,
+                        inlineFilterPanelConfig: {
+                            
+                            quickFilterPanelConfig: {
+                                defaultFields: [
+                                    'ArtifactSearch',
+                                'Owner',
+                                'Iteration'
+                            ]
+                        }
+                    }
+                }
+            }],
             storeConfig: {
                 filters: filters
-            }
-            ,
+            },
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,

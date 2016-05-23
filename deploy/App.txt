@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 23 2016 15:07:03 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon May 23 2016 15:56:04 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 23 2016 15:07:03 GMT-0700 (PDT)";
-        var CHECKSUM = 66172813769;
+        var APP_BUILD_DATE = "Mon May 23 2016 15:56:04 GMT-0700 (PDT)";
+        var CHECKSUM = 53044034260;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -15,58 +15,6 @@
     <script type="text/javascript">
         Rally.onReady(function() {
              
-Ext.define('ExampleBulkRecordMenuItem', {
-    alias: 'widget.examplebulkrecordmenuitem',
-    extend: 'Rally.ui.menu.bulk.MenuItem',
-
-    config: {
-        onBeforeAction: function(){
-//            console.log('onbeforeaction');
-        },
-
-        /**
-         * @cfg {Function} onActionComplete a function called when the specified menu item action has completed
-         * @param Rally.data.wsapi.Model[] onActionComplete.successfulRecords any successfully modified records
-         * @param Rally.data.wsapi.Model[] onActionComplete.unsuccessfulRecords any records which failed to be updated
-         */
-        onActionComplete: function(){
-            console.log('onActionComplete');
-        },
-
-        text: 'Print Cards',
-
-        handler: function (menuItem) {
-            console.log('example menu item clicked',menuItem.records);
-            this._openPrintCards(menuItem.records);
-
-        },
-        predicate: function (records) {
-            return _.every(records, function (record) {
-                return record;
-            });
-        }
-    },
-    _openPrintCards: function(records){
-        
-        var fields =[{
-            dataIndex: 'Name',
-            maxLength: 200,
-            cls: 'card-title'
-        },{
-            dataIndex: 'FormattedID',
-            cls: 'card-id'
-        }];
-//
-        var win = Ext.create('Rally.technicalservices.window.PrintCards',{
-            records: records,
-            displayFields: fields,
-            currentDocument: Ext.getDoc()
-        });
-        
-        win.show();
-        win.print();
-    }
-});
 /**
  * A link that pops up a version dialog box
  */
@@ -365,78 +313,6 @@ Ext.define('Rally.technicalservices.CardTemplate',{
         ]);
     }
 });
-Ext.override(Rally.ui.gridboard.plugin.GridBoardFieldPicker,{
-    
-    // add ability to override the properties of the popover, mostly so we can do height
-    _getPopoverConfig: function() {
-        return this.popoverConfig || {};
-    },
-    
-    
-    _createPopover: function(popoverTarget) {
-        this.popover = Ext.create('Rally.ui.popover.Popover', 
-            _.extend({
-                target: popoverTarget,
-                placement: ['bottom', 'left', 'top', 'right'],
-                cls: 'field-picker-popover',
-                toFront: Ext.emptyFn,
-                buttonAlign: 'center',
-                title: this.getTitle(),
-                listeners: {
-                    destroy: function () {
-                        this.popover = null;
-                    },
-                    scope: this
-                },
-                buttons: [
-                    {
-                        xtype: "rallybutton",
-                        text: 'Apply',
-                        cls: 'field-picker-apply-btn primary rly-small',
-                        listeners: {
-                            click: function() {
-                                this._onApply(this.popover);
-                            },
-                            scope: this
-                        }
-                    },
-                    {
-                        xtype: "rallybutton",
-                        text: 'Cancel',
-                        cls: 'field-picker-cancel-btn secondary dark rly-small',
-                        listeners: {
-                            click: function() {
-                                this.popover.close();
-                            },
-                            scope: this
-                        }
-                    }
-                ],
-                items: [
-                    _.extend({
-                        xtype: 'rallyfieldpicker',
-                        cls: 'field-picker',
-                        itemId: 'fieldpicker',
-                        modelTypes: this._getModelTypes(),
-                        alwaysExpanded: true,
-                        width: 200,
-                        placeholderText: 'Search',
-                        selectedTextLabel: 'Selected',
-                        availableTextLabel: 'Available',
-                        listeners: {
-                            specialkey: function(field, e) {
-                                if (e.getKey() === e.ESC) {
-                                    this.popover.close();
-                                }
-                            },
-                            scope: this
-                        }
-                    }, this._getPickerConfig())
-                ]
-            }, this._getPopoverConfig())
-        );
-    }
-});
 Ext.override(Rally.ui.grid.TreeGrid,{
 
     /* 
@@ -576,82 +452,6 @@ Ext.define('Rally.technicalservices.window.PrintCards',{
         return styleSheet.innerHTML;
     }
 });
-Ext.define('Rally.technicalservices.DashboardSettings',{
-    selectedType: undefined,
-
-});
-
-Ext.override(Ext.util.Filter,{
-    createFilterFn: function() {
-        var me       = this,
-            matcher  = me.createValueMatcher();
-        
-        var property = me.property;
-        
-        if ( !Ext.isArray(me.property) && /,/.test(me.property) ) {
-            property = me.property.split(',');
-        }
-        
-        return function(item) {
-            var hasmatch = false;
-            for(var i=0;i<property.length;i++) {
-                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
-                    hasmatch=true;
-                    break;
-                }
-            }
-            return matcher === null ? value === null : hasmatch;
-        };
-    }
-});
-
-
-Ext.override(Rally.ui.combobox.ComboBox, {
-
-    doLocalQuery: function(queryPlan) {
-        var me = this,
-            queryString = queryPlan.query;
-
-        // Create our filter when first needed
-        if (!me.queryFilter) {
-            // Create the filter that we will use during typing to filter the Store
-            me.queryFilter = new Ext.util.Filter({
-                id: me.id + '-query-filter',
-                anyMatch: true,
-                caseSensitive: false,
-                root: 'data',
-                property: me.filterProperties
-            });
-                        
-            me.store.addFilter(me.queryFilter, false);
-        }
-
-        // Querying by a string...
-        if (queryString || !queryPlan.forceAll) {
-            me.queryFilter.disabled = false;
-            me.queryFilter.setValue(me.enableRegEx ? new RegExp(queryString) : queryString);
-        }
-
-        // If forceAll being used, or no query string, disable the filter
-        else {
-            me.queryFilter.disabled = true;
-        }
-
-        // Filter the Store according to the updated filter
-        me.store.filter();
-
-        // Expand after adjusting the filter unless there are no matches
-        if (me.store.getCount()) {
-            me.expand();
-        } else {
-            me.collapse();
-        }
-
-        me.afterQuery(queryPlan);
-    }
-});
-
-
 Ext.define('Rally.technicalservices.PortfolioParentComboBox',{
     extend: 'Rally.ui.combobox.FieldValueComboBox',
     _loadStoreValues: function() {
@@ -1486,46 +1286,34 @@ Ext.define("PPIC", {
             toggleState: 'grid',
             store: store,
             context: this.getContext(),
-            plugins:[
-            {
+            stateful: false,
+            plugins:[{
                 ptype: 'rallygridboardfieldpicker',
                 headerPosition: 'left',
                 margin: '3 0 0 10'
-            }
-            ,
+            },
             {
-                 ptype: 'rallygridboardinlinefiltercontrol',
-                 inlineFilterButtonConfig: {
-                     modelNames: modelNames,
-                     inlineFilterPanelConfig: {
-                         collapsed: false,
-                         quickFilterPanelConfig: {
-                             fieldNames: ['Owner', 'ScheduleState']
-                         }
-                     }
-                 }
-             }
-
-            // ,
-            // {
-            //         ptype: 'rallygridboardcustomfiltercontrol',
-            //         filterControlConfig: {
-            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-            //             stateful: true,
-            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-            //         },
-            //         showOwnerFilter: true,
-            //         ownerFilterControlConfig: {
-            //            stateful: true,
-            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-            //         }
-            //     }
-
-            ],
+                ptype: 'rallygridboardinlinefiltercontrol',
+                inlineFilterButtonConfig: {
+                    stateful: true,
+                    stateId: 'ca.techservices.printgridcards.filter',
+   
+                        modelNames: modelNames,
+                        inlineFilterPanelConfig: {
+                            
+                            quickFilterPanelConfig: {
+                                defaultFields: [
+                                    'ArtifactSearch',
+                                'Owner',
+                                'Iteration'
+                            ]
+                        }
+                    }
+                }
+            }],
             storeConfig: {
                 filters: filters
-            }
-            ,
+            },
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,
