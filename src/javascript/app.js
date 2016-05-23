@@ -167,9 +167,8 @@ Ext.define("PPIC", {
                 return filter;
             }
         }
-        console.log('model for filters >>>',this.models);
+
         var invalidQueryFilters = this._findInvalidSubFilters(filter, this.models);
-        console.log('invalidQueryFilters >>>',invalidQueryFilters);
 
         if (invalidQueryFilters.length) {
             filter = [];
@@ -303,7 +302,7 @@ Ext.define("PPIC", {
                 height: this.getHeight(),
                 bulkEditConfig: {
                     items: [{
-                        xtype: 'examplebulkrecordmenuitem'
+                        xtype: 'tsbulkrecordmenuitem'
                     }]
                 }
             }
