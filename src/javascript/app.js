@@ -8,7 +8,6 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            type: ['hierarchicalrequirement','defect'],
             columnNames: ['FormattedID','Name'],
             showControls: true
         }
@@ -41,12 +40,12 @@ Ext.define("PPIC", {
         return this.gridboard;
     },
     getModelNames: function(){
-        var models = this.getSetting('type') || [];
-        if (!(models instanceof Array)){
-            models = models.split(',');
-        }
-        return models;  
-        //return ['HierarchicalRequirement','Defect'];     
+        return ['userstory','defect'];
+//        var models = this.getSetting('type') || [];
+//        if (!(models instanceof Array)){
+//            models = models.split(',');
+//        }
+//        return models;  
     },
     addComponents: function(){
         this.logger.log('addComponents',this.portfolioItemTypes);
@@ -57,21 +56,13 @@ Ext.define("PPIC", {
         this.displayContainer = this.add({xtype:'container',itemId:'body-ct', tpl: '<tpl>{message}</tpl>'});
 
         this.headerContainer.add({
-            xtype:'rallyiterationcombobox',
-            fieldLabel: 'Iteration:',
-            margin: 10,
-            labelWidth: 55,
-            width: 275,
-            allowClear: true
-        });
-
-        this.headerContainer.add({
             xtype: 'portfolioitemselector',
             context: this.getContext(),
             type: this.getSetting('selectorType'),
             stateful: false,
             stateId: this.getContext().getScopedStateId('app-selector'),
             width: '75%',
+            fieldLabel: 'Descendants of',
             listeners: {
                 change: this.updatePortfolioItem,
                 scope: this
@@ -89,8 +80,7 @@ Ext.define("PPIC", {
     },
     updatePortfolioItem: function(portfolioItemRecord){
         this.logger.log('updatePortfolioItem', portfolioItemRecord);
-        this.iteration = this.down('rallyiterationcombobox').getRecord();
-        console.log('this.Iteration>>',this.iteration);
+
         this.getBody().removeAll();
         this.portfolioItem = portfolioItemRecord;
         this.loadGridBoard();
@@ -131,16 +121,13 @@ Ext.define("PPIC", {
             requester: this
         }).then({
             success: function (models) {
-                console.log('Models>>>',models);
                 this.models = _.transform(models, function (result, value) {
                     result.push(value);
                 }, []);
 
                 this.modelNames = _.keys(models);
-                //console.log('models>>>>>',_.clone(this.models));
-                console.log('this.modelNames>>>',this.modelNames);
                 Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-                    autoLoad: true,
+                    autoLoad: false,
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
                     enableHierarchy: false,
@@ -161,16 +148,7 @@ Ext.define("PPIC", {
     },
     getPermanentFilters: function () {
         var filters = this._getQueryFilter().concat(this._getPortfolioItemFilter());
-        this.logger.log('filter before iteration',filters);
-        if(this.iteration){
-            iteration_filters  = Ext.create('Rally.data.wsapi.Filter',{property:'Iteration.Name',value:this.iteration.get('Name')});
-            if(filters && filters.length > 0){
-                filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
-            }else{
-                filters = iteration_filters;
-            }
-            
-        }
+        
         this.logger.log('getPermanentFilters', filters.toString());
         return filters;
     },
@@ -189,9 +167,8 @@ Ext.define("PPIC", {
                 return filter;
             }
         }
-        console.log('model for filters >>>',this.models);
+
         var invalidQueryFilters = this._findInvalidSubFilters(filter, this.models);
-        console.log('invalidQueryFilters >>>',invalidQueryFilters);
 
         if (invalidQueryFilters.length) {
             filter = [];
@@ -287,46 +264,34 @@ Ext.define("PPIC", {
             toggleState: 'grid',
             store: store,
             context: this.getContext(),
-            plugins:[
-            {
+            stateful: false,
+            plugins:[{
                 ptype: 'rallygridboardfieldpicker',
                 headerPosition: 'left',
                 margin: '3 0 0 10'
-            }
-            ,
+            },
             {
-                 ptype: 'rallygridboardinlinefiltercontrol',
-                 inlineFilterButtonConfig: {
-                     modelNames: modelNames,
-                     inlineFilterPanelConfig: {
-                         collapsed: false,
-                         quickFilterPanelConfig: {
-                             fieldNames: ['Owner', 'ScheduleState']
-                         }
-                     }
-                 }
-             }
-
-            // ,
-            // {
-            //         ptype: 'rallygridboardcustomfiltercontrol',
-            //         filterControlConfig: {
-            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-            //             stateful: true,
-            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-            //         },
-            //         showOwnerFilter: true,
-            //         ownerFilterControlConfig: {
-            //            stateful: true,
-            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-            //         }
-            //     }
-
-            ],
+                ptype: 'rallygridboardinlinefiltercontrol',
+                inlineFilterButtonConfig: {
+                    stateful: true,
+                    stateId: 'ca.techservices.printgridcards.filter',
+   
+                        modelNames: modelNames,
+                        inlineFilterPanelConfig: {
+                            
+                            quickFilterPanelConfig: {
+                                defaultFields: [
+                                    'ArtifactSearch',
+                                'Owner',
+                                'Iteration'
+                            ]
+                        }
+                    }
+                }
+            }],
             storeConfig: {
                 filters: filters
-            }
-            ,
+            },
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,
@@ -337,7 +302,7 @@ Ext.define("PPIC", {
                 height: this.getHeight(),
                 bulkEditConfig: {
                     items: [{
-                        xtype: 'examplebulkrecordmenuitem'
+                        xtype: 'tsbulkrecordmenuitem'
                     }]
                 }
             }
@@ -395,10 +360,12 @@ Ext.define("PPIC", {
     },
     
     _shouldEnableAddNew: function() {
-        return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
+        return false;
+        //return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
     },
 
     _shouldEnableRanking: function(){
-        return this.getSetting('type').toLowerCase() !== 'task';
+        return false;
+        //return this.getSetting('type').toLowerCase() !== 'task';
     }
 });

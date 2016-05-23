@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 23 2016 11:25:56 GMT-0400 (EDT) -->
+    <!--  Build Date: Mon May 23 2016 16:16:35 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 23 2016 11:25:56 GMT-0400 (EDT)";
-        var CHECKSUM = 74949621199;
+        var APP_BUILD_DATE = "Mon May 23 2016 16:16:35 GMT-0700 (PDT)";
+        var CHECKSUM = 56121570345;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -15,58 +15,6 @@
     <script type="text/javascript">
         Rally.onReady(function() {
              
-Ext.define('ExampleBulkRecordMenuItem', {
-    alias: 'widget.examplebulkrecordmenuitem',
-    extend: 'Rally.ui.menu.bulk.MenuItem',
-
-    config: {
-        onBeforeAction: function(){
-//            console.log('onbeforeaction');
-        },
-
-        /**
-         * @cfg {Function} onActionComplete a function called when the specified menu item action has completed
-         * @param Rally.data.wsapi.Model[] onActionComplete.successfulRecords any successfully modified records
-         * @param Rally.data.wsapi.Model[] onActionComplete.unsuccessfulRecords any records which failed to be updated
-         */
-        onActionComplete: function(){
-            console.log('onActionComplete');
-        },
-
-        text: 'Print Cards',
-
-        handler: function (menuItem) {
-            console.log('example menu item clicked',menuItem.records);
-            this._openPrintCards(menuItem.records);
-
-        },
-        predicate: function (records) {
-            return _.every(records, function (record) {
-                return record;
-            });
-        }
-    },
-    _openPrintCards: function(records){
-        
-        var fields =[{
-            dataIndex: 'Name',
-            maxLength: 200,
-            cls: 'card-title'
-        },{
-            dataIndex: 'FormattedID',
-            cls: 'card-id'
-        }];
-//
-        var win = Ext.create('Rally.technicalservices.window.PrintCards',{
-            records: records,
-            displayFields: fields,
-            currentDocument: Ext.getDoc()
-        });
-        
-        win.show();
-        win.print();
-    }
-});
 /**
  * A link that pops up a version dialog box
  */
@@ -228,6 +176,59 @@ Ext.define('Rally.technicalservices.Logger',{
 
 });
 
+Ext.define('TSBulkMenu', {
+    alias: 'widget.tsbulkrecordmenuitem',
+    extend: 'Rally.ui.menu.bulk.MenuItem',
+
+    config: {
+        onBeforeAction: function(){
+//            console.log('onbeforeaction');
+        },
+
+        /**
+         * @cfg {Function} onActionComplete a function called when the specified menu item action has completed
+         * @param Rally.data.wsapi.Model[] onActionComplete.successfulRecords any successfully modified records
+         * @param Rally.data.wsapi.Model[] onActionComplete.unsuccessfulRecords any records which failed to be updated
+         */
+        onActionComplete: function(){
+            console.log('onActionComplete');
+        },
+
+        text: 'Print Cards',
+
+        handler: function (menuItem) {
+            console.log('example menu item clicked',menuItem.records);
+            this._openPrintCards(menuItem.records);
+
+        },
+        predicate: function (records) {
+            return _.every(records, function (record) {
+                return record;
+            });
+        }
+    },
+    _openPrintCards: function(records){
+        
+        var fields =[{
+            dataIndex: 'Name',
+            maxLength: 200,
+            cls: 'card-title'
+        },{
+            dataIndex: 'FormattedID',
+            cls: 'card-id'
+        }];
+//
+        var win = Ext.create('Rally.technicalservices.window.PrintCards',{
+            records: records,
+            displayFields: fields,
+            currentDocument: Ext.getDoc()
+        });
+        
+        win.show();
+        win.print();
+    }
+});
+
 Ext.define('Rally.technicalservices.CardConfiguration',{
     singleton: true,
 
@@ -363,192 +364,6 @@ Ext.define('Rally.technicalservices.CardTemplate',{
                 displayFields: config.displayFields
             }
         ]);
-    }
-});
-Ext.override(Rally.ui.filter.CustomFilterRow, {
-    _getItems: function() {
-        var items = [
-            {
-                xtype: 'rallycombobox',
-                itemId: 'fieldCombobox',
-                disabled: true,
-                autoLoad: false,
-                defaultSelectionPosition: null,
-                store: Ext.create('Ext.data.Store', {
-                    fields: ['attributeDefinition', 'displayName', 'modelNames', 'name']
-                }),
-                displayField: 'displayName',
-                emptyText: 'Choose Field...',
-                valueField: 'name',
-                matchFieldWidth: true,
-                listeners: {
-                    select: this._onFieldSelect,
-                    afterrender: this._onFieldAfterRender,
-                    expand: this._onFieldExpand,
-                    scope: this
-                },
-                width: this.boxWidths.field,
-                filterProperties: ['displayName'],
-                listConfig: {
-                    itemTpl: new Ext.XTemplate('' +
-                        '{displayName}',
-                        '<tpl if="this.hasModelNames(values)">',
-                            '<div class="duplicate-field-model-name">- {modelNames}</div>',
-                        '</tpl>',
-                        {
-                            hasModelNames: function (data) {
-                                return data.modelNames.length > 0;
-                            }
-                        })
-                }
-            },
-            {
-                xtype: 'rallycombobox',
-                itemId: 'operatorCombobox',
-                disabled: true,
-                autoLoad: false,
-                editable: false,
-                forceSelection: true,
-                store: Ext.create('Ext.data.Store', {
-                    fields: ['name', 'displayName'],
-                    listeners: {
-                        datachanged: this._onOperatorDataChanged,
-                        scope: this
-                    }
-                }),
-                displayField: 'displayName',
-                valueField: 'name',
-                matchFieldWidth: true,
-                listeners: {
-                    setvalue: this._onOperatorSetValue,
-                    scope: this
-                },
-                width: this.boxWidths.operator
-            }
-        ];
-
-        if (!this._hasInitialData()) {
-            items.push({
-                xtype: 'rallytextfield',
-                itemId: 'valueField',
-                disabled: true,
-                height: 22,
-                width: this.boxWidths.value
-            });
-        }
-        return items;
-    }
-
-});
-
-Ext.override(Rally.ui.filter.CustomFilterPanel,{
-    _getItems: function() {
-        return [
-            {
-                xtype: 'container',
-                cls: 'custom-filter-header',
-                layout: 'column',
-                defaults: {
-                    xtype: 'component',
-                    cls: 'filter-panel-label'
-                },
-                items: [
-                    {
-                        height: 1,
-                        width: 30
-                    },
-                    // CHANGED these values to make headers line up
-                    {
-                        html: 'Field',
-                        width: this.boxWidths.field + 5 || 135
-                    },
-                    {
-                        html: 'Operator',
-                        width: this.boxWidths.operator + 5|| 140
-                    },
-                    {
-                        html: 'Value',
-                        width: this.boxWidths.value + 5 || 155
-                    }
-                ]
-            },
-            {
-                xtype: 'container',
-                itemId: 'customFilterRows'
-            }
-        ];
-    }
-});
-Ext.override(Rally.ui.gridboard.plugin.GridBoardFieldPicker,{
-    
-    // add ability to override the properties of the popover, mostly so we can do height
-    _getPopoverConfig: function() {
-        return this.popoverConfig || {};
-    },
-    
-    
-    _createPopover: function(popoverTarget) {
-        this.popover = Ext.create('Rally.ui.popover.Popover', 
-            _.extend({
-                target: popoverTarget,
-                placement: ['bottom', 'left', 'top', 'right'],
-                cls: 'field-picker-popover',
-                toFront: Ext.emptyFn,
-                buttonAlign: 'center',
-                title: this.getTitle(),
-                listeners: {
-                    destroy: function () {
-                        this.popover = null;
-                    },
-                    scope: this
-                },
-                buttons: [
-                    {
-                        xtype: "rallybutton",
-                        text: 'Apply',
-                        cls: 'field-picker-apply-btn primary rly-small',
-                        listeners: {
-                            click: function() {
-                                this._onApply(this.popover);
-                            },
-                            scope: this
-                        }
-                    },
-                    {
-                        xtype: "rallybutton",
-                        text: 'Cancel',
-                        cls: 'field-picker-cancel-btn secondary dark rly-small',
-                        listeners: {
-                            click: function() {
-                                this.popover.close();
-                            },
-                            scope: this
-                        }
-                    }
-                ],
-                items: [
-                    _.extend({
-                        xtype: 'rallyfieldpicker',
-                        cls: 'field-picker',
-                        itemId: 'fieldpicker',
-                        modelTypes: this._getModelTypes(),
-                        alwaysExpanded: true,
-                        width: 200,
-                        placeholderText: 'Search',
-                        selectedTextLabel: 'Selected',
-                        availableTextLabel: 'Available',
-                        listeners: {
-                            specialkey: function(field, e) {
-                                if (e.getKey() === e.ESC) {
-                                    this.popover.close();
-                                }
-                            },
-                            scope: this
-                        }
-                    }, this._getPickerConfig())
-                ]
-            }, this._getPopoverConfig())
-        );
     }
 });
 Ext.override(Rally.ui.grid.TreeGrid,{
@@ -690,82 +505,6 @@ Ext.define('Rally.technicalservices.window.PrintCards',{
         return styleSheet.innerHTML;
     }
 });
-Ext.define('Rally.technicalservices.DashboardSettings',{
-    selectedType: undefined,
-
-});
-
-Ext.override(Ext.util.Filter,{
-    createFilterFn: function() {
-        var me       = this,
-            matcher  = me.createValueMatcher();
-        
-        var property = me.property;
-        
-        if ( !Ext.isArray(me.property) && /,/.test(me.property) ) {
-            property = me.property.split(',');
-        }
-        
-        return function(item) {
-            var hasmatch = false;
-            for(var i=0;i<property.length;i++) {
-                if(matcher.test(me.getRoot.call(me, item)[property[i]])) {
-                    hasmatch=true;
-                    break;
-                }
-            }
-            return matcher === null ? value === null : hasmatch;
-        };
-    }
-});
-
-
-Ext.override(Rally.ui.combobox.ComboBox, {
-
-    doLocalQuery: function(queryPlan) {
-        var me = this,
-            queryString = queryPlan.query;
-
-        // Create our filter when first needed
-        if (!me.queryFilter) {
-            // Create the filter that we will use during typing to filter the Store
-            me.queryFilter = new Ext.util.Filter({
-                id: me.id + '-query-filter',
-                anyMatch: true,
-                caseSensitive: false,
-                root: 'data',
-                property: me.filterProperties
-            });
-                        
-            me.store.addFilter(me.queryFilter, false);
-        }
-
-        // Querying by a string...
-        if (queryString || !queryPlan.forceAll) {
-            me.queryFilter.disabled = false;
-            me.queryFilter.setValue(me.enableRegEx ? new RegExp(queryString) : queryString);
-        }
-
-        // If forceAll being used, or no query string, disable the filter
-        else {
-            me.queryFilter.disabled = true;
-        }
-
-        // Filter the Store according to the updated filter
-        me.store.filter();
-
-        // Expand after adjusting the filter unless there are no matches
-        if (me.store.getCount()) {
-            me.expand();
-        } else {
-            me.collapse();
-        }
-
-        me.afterQuery(queryPlan);
-    }
-});
-
-
 Ext.define('Rally.technicalservices.PortfolioParentComboBox',{
     extend: 'Rally.ui.combobox.FieldValueComboBox',
     _loadStoreValues: function() {
@@ -926,13 +665,14 @@ Ext.define('portfolio-item-selector', {
                     limit: Infinity
                 },
                 allowNoEntry: true,
-                noEntryText: '--None--',
+                noEntryText: 'No Selection',
                 noEntryValue: 0,
                 itemId: 'cb-portfolioitem',
                 margin: 10,
                 valueField: 'ObjectID',
                 displayField: 'FormattedID',
                 width: 600,
+                fieldLabel: this.fieldLabel || "",
                 listConfig: {
                     itemTpl: '<tpl>{FormattedID}: {Name}</tpl>'
                 },
@@ -946,23 +686,23 @@ Ext.define('portfolio-item-selector', {
                 '<tpl if="xindex < xcount">,</tpl>' +
                 '</tpl>'
             });
-            //cb.on('ready', this._updatePortfolioItem, this);
-            //cb.on('change', this._updateGoButton, this);
+            cb.on('ready', this._updatePortfolioItem, this);
+            cb.on('change', this._updatePortfolioItem, this);
             
             this.add(cb);
             
-            this.add({
-                xtype: 'rallybutton',
-                text: this.buttonText,
-                itemId: 'cb-go-button',
-                cls: 'rly-small primary',
-                //disabled: true,
-                margin: 10,
-                listeners: {
-                    scope: this,
-                    click: this._updatePortfolioItem
-                }
-            });
+//            this.add({
+//                xtype: 'rallybutton',
+//                text: this.buttonText,
+//                itemId: 'cb-go-button',
+//                cls: 'rly-small primary',
+//                //disabled: true,
+//                margin: 10,
+//                listeners: {
+//                    scope: this,
+//                    click: this._updatePortfolioItem
+//                }
+//            });
         }
     },
     
@@ -1050,46 +790,46 @@ Ext.define('portfolio-item-selector', {
                     //     }
                     // }
                 },
-                {
-                    name: 'type',
-                    xtype: 'rallycombobox',
-                    allowBlank: false,
-                    autoSelect: false,
-                    multiSelect: true,
-                    shouldRespondToScopeChange: true,
-                    fieldLabel: 'Results Type',
-                    context: context,
-                    initialValue: 'HierarchicalRequirement',
-                    storeConfig: {
-                        model: Ext.identityFn('TypeDefinition'),
-                        sorters: [{ property: 'DisplayName' }],
-                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
-                        filters: type_filters,
-                        autoLoad: false,
-                        remoteSort: false,
-                        remoteFilter: true
-                    },
-                    displayField: 'DisplayName',
-                    valueField: 'TypePath',
-                    listeners: {
-                        setvalue: function() {
-                            if ( this.getRecord() ) {
-                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
-                            }
-//                        },
-//                        change: function (combo) {
-//                            console.log('changed');
-//                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
-                        }
-                    },
-                    bubbleEvents: ['typeselected'],
-                    readyEvent: 'ready',
-                    handlesEvents: {
-                        projectscopechanged: function (context) {
-                            this.refreshWithNewContext(context);
-                        }
-                    }
-                },
+//                {
+//                    name: 'type',
+//                    xtype: 'rallycombobox',
+//                    allowBlank: false,
+//                    autoSelect: false,
+//                    multiSelect: true,
+//                    shouldRespondToScopeChange: true,
+//                    fieldLabel: 'Results Type',
+//                    context: context,
+//                    initialValue: 'HierarchicalRequirement',
+//                    storeConfig: {
+//                        model: Ext.identityFn('TypeDefinition'),
+//                        sorters: [{ property: 'DisplayName' }],
+//                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
+//                        filters: type_filters,
+//                        autoLoad: false,
+//                        remoteSort: false,
+//                        remoteFilter: true
+//                    },
+//                    displayField: 'DisplayName',
+//                    valueField: 'TypePath',
+//                    listeners: {
+//                        setvalue: function() {
+//                            if ( this.getRecord() ) {
+//                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
+//                            }
+////                        },
+////                        change: function (combo) {
+////                            console.log('changed');
+////                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
+//                        }
+//                    },
+//                    bubbleEvents: ['typeselected'],
+//                    readyEvent: 'ready',
+//                    handlesEvents: {
+//                        projectscopechanged: function (context) {
+//                            this.refreshWithNewContext(context);
+//                        }
+//                    }
+//                },
                 // {
                 //     xtype: 'rallyfieldpicker',
                 //     name: 'columnNames',
@@ -1342,7 +1082,6 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            type: ['hierarchicalrequirement','defect'],
             columnNames: ['FormattedID','Name'],
             showControls: true
         }
@@ -1375,12 +1114,12 @@ Ext.define("PPIC", {
         return this.gridboard;
     },
     getModelNames: function(){
-        var models = this.getSetting('type') || [];
-        if (!(models instanceof Array)){
-            models = models.split(',');
-        }
-        return models;  
-        //return ['HierarchicalRequirement','Defect'];     
+        return ['userstory','defect'];
+//        var models = this.getSetting('type') || [];
+//        if (!(models instanceof Array)){
+//            models = models.split(',');
+//        }
+//        return models;  
     },
     addComponents: function(){
         this.logger.log('addComponents',this.portfolioItemTypes);
@@ -1391,21 +1130,13 @@ Ext.define("PPIC", {
         this.displayContainer = this.add({xtype:'container',itemId:'body-ct', tpl: '<tpl>{message}</tpl>'});
 
         this.headerContainer.add({
-            xtype:'rallyiterationcombobox',
-            fieldLabel: 'Iteration:',
-            margin: 10,
-            labelWidth: 55,
-            width: 275,
-            allowClear: true
-        });
-
-        this.headerContainer.add({
             xtype: 'portfolioitemselector',
             context: this.getContext(),
             type: this.getSetting('selectorType'),
             stateful: false,
             stateId: this.getContext().getScopedStateId('app-selector'),
             width: '75%',
+            fieldLabel: 'Descendants of',
             listeners: {
                 change: this.updatePortfolioItem,
                 scope: this
@@ -1423,8 +1154,7 @@ Ext.define("PPIC", {
     },
     updatePortfolioItem: function(portfolioItemRecord){
         this.logger.log('updatePortfolioItem', portfolioItemRecord);
-        this.iteration = this.down('rallyiterationcombobox').getRecord();
-        console.log('this.Iteration>>',this.iteration);
+
         this.getBody().removeAll();
         this.portfolioItem = portfolioItemRecord;
         this.loadGridBoard();
@@ -1465,16 +1195,13 @@ Ext.define("PPIC", {
             requester: this
         }).then({
             success: function (models) {
-                console.log('Models>>>',models);
                 this.models = _.transform(models, function (result, value) {
                     result.push(value);
                 }, []);
 
                 this.modelNames = _.keys(models);
-                //console.log('models>>>>>',_.clone(this.models));
-                console.log('this.modelNames>>>',this.modelNames);
                 Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
-                    autoLoad: true,
+                    autoLoad: false,
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
                     enableHierarchy: false,
@@ -1495,16 +1222,7 @@ Ext.define("PPIC", {
     },
     getPermanentFilters: function () {
         var filters = this._getQueryFilter().concat(this._getPortfolioItemFilter());
-        this.logger.log('filter before iteration',filters);
-        if(this.iteration){
-            iteration_filters  = Ext.create('Rally.data.wsapi.Filter',{property:'Iteration.Name',value:this.iteration.get('Name')});
-            if(filters && filters.length > 0){
-                filters = Rally.data.wsapi.Filter.and(filters).and(iteration_filters);
-            }else{
-                filters = iteration_filters;
-            }
-            
-        }
+        
         this.logger.log('getPermanentFilters', filters.toString());
         return filters;
     },
@@ -1523,9 +1241,8 @@ Ext.define("PPIC", {
                 return filter;
             }
         }
-        console.log('model for filters >>>',this.models);
+
         var invalidQueryFilters = this._findInvalidSubFilters(filter, this.models);
-        console.log('invalidQueryFilters >>>',invalidQueryFilters);
 
         if (invalidQueryFilters.length) {
             filter = [];
@@ -1621,46 +1338,34 @@ Ext.define("PPIC", {
             toggleState: 'grid',
             store: store,
             context: this.getContext(),
-            plugins:[
-            {
+            stateful: false,
+            plugins:[{
                 ptype: 'rallygridboardfieldpicker',
                 headerPosition: 'left',
                 margin: '3 0 0 10'
-            }
-            ,
+            },
             {
-                 ptype: 'rallygridboardinlinefiltercontrol',
-                 inlineFilterButtonConfig: {
-                     modelNames: modelNames,
-                     inlineFilterPanelConfig: {
-                         collapsed: false,
-                         quickFilterPanelConfig: {
-                             fieldNames: ['Owner', 'ScheduleState']
-                         }
-                     }
-                 }
-             }
-
-            // ,
-            // {
-            //         ptype: 'rallygridboardcustomfiltercontrol',
-            //         filterControlConfig: {
-            //             modelNames: modelNames,//['HierarchicalRequirement','Defect'],
-            //             stateful: true,
-            //             stateId: this.getContext().getScopedStateId('portfolio-grid-filter-2')
-            //         },
-            //         showOwnerFilter: true,
-            //         ownerFilterControlConfig: {
-            //            stateful: true,
-            //            stateId: this.getContext().getScopedStateId('portfolio-owner-filter-2')
-            //         }
-            //     }
-
-            ],
+                ptype: 'rallygridboardinlinefiltercontrol',
+                inlineFilterButtonConfig: {
+                    stateful: true,
+                    stateId: 'ca.techservices.printgridcards.filter',
+   
+                        modelNames: modelNames,
+                        inlineFilterPanelConfig: {
+                            
+                            quickFilterPanelConfig: {
+                                defaultFields: [
+                                    'ArtifactSearch',
+                                'Owner',
+                                'Iteration'
+                            ]
+                        }
+                    }
+                }
+            }],
             storeConfig: {
                 filters: filters
-            }
-            ,
+            },
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,
@@ -1671,7 +1376,7 @@ Ext.define("PPIC", {
                 height: this.getHeight(),
                 bulkEditConfig: {
                     items: [{
-                        xtype: 'examplebulkrecordmenuitem'
+                        xtype: 'tsbulkrecordmenuitem'
                     }]
                 }
             }
@@ -1729,11 +1434,13 @@ Ext.define("PPIC", {
     },
     
     _shouldEnableAddNew: function() {
-        return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
+        return false;
+        //return !_.contains(this.disallowedAddNewTypes, this.getSetting('type').toLowerCase());
     },
 
     _shouldEnableRanking: function(){
-        return this.getSetting('type').toLowerCase() !== 'task';
+        return false;
+        //return this.getSetting('type').toLowerCase() !== 'task';
     }
 });
 

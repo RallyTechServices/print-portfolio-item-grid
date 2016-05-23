@@ -1,5 +1,5 @@
-Ext.define('ExampleBulkRecordMenuItem', {
-    alias: 'widget.examplebulkrecordmenuitem',
+Ext.define('TSBulkMenu', {
+    alias: 'widget.tsbulkrecordmenuitem',
     extend: 'Rally.ui.menu.bulk.MenuItem',
 
     config: {
