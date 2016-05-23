@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon May 23 2016 14:43:18 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon May 23 2016 14:47:45 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon May 23 2016 14:43:18 GMT-0700 (PDT)";
-        var CHECKSUM = 74949627138;
+        var APP_BUILD_DATE = "Mon May 23 2016 14:47:45 GMT-0700 (PDT)";
+        var CHECKSUM = 74979410479;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -1050,46 +1050,46 @@ Ext.define('portfolio-item-selector', {
                     //     }
                     // }
                 },
-                {
-                    name: 'type',
-                    xtype: 'rallycombobox',
-                    allowBlank: false,
-                    autoSelect: false,
-                    multiSelect: true,
-                    shouldRespondToScopeChange: true,
-                    fieldLabel: 'Results Type',
-                    context: context,
-                    initialValue: 'HierarchicalRequirement',
-                    storeConfig: {
-                        model: Ext.identityFn('TypeDefinition'),
-                        sorters: [{ property: 'DisplayName' }],
-                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
-                        filters: type_filters,
-                        autoLoad: false,
-                        remoteSort: false,
-                        remoteFilter: true
-                    },
-                    displayField: 'DisplayName',
-                    valueField: 'TypePath',
-                    listeners: {
-                        setvalue: function() {
-                            if ( this.getRecord() ) {
-                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
-                            }
-//                        },
-//                        change: function (combo) {
-//                            console.log('changed');
-//                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
-                        }
-                    },
-                    bubbleEvents: ['typeselected'],
-                    readyEvent: 'ready',
-                    handlesEvents: {
-                        projectscopechanged: function (context) {
-                            this.refreshWithNewContext(context);
-                        }
-                    }
-                },
+//                {
+//                    name: 'type',
+//                    xtype: 'rallycombobox',
+//                    allowBlank: false,
+//                    autoSelect: false,
+//                    multiSelect: true,
+//                    shouldRespondToScopeChange: true,
+//                    fieldLabel: 'Results Type',
+//                    context: context,
+//                    initialValue: 'HierarchicalRequirement',
+//                    storeConfig: {
+//                        model: Ext.identityFn('TypeDefinition'),
+//                        sorters: [{ property: 'DisplayName' }],
+//                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
+//                        filters: type_filters,
+//                        autoLoad: false,
+//                        remoteSort: false,
+//                        remoteFilter: true
+//                    },
+//                    displayField: 'DisplayName',
+//                    valueField: 'TypePath',
+//                    listeners: {
+//                        setvalue: function() {
+//                            if ( this.getRecord() ) {
+//                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
+//                            }
+////                        },
+////                        change: function (combo) {
+////                            console.log('changed');
+////                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
+//                        }
+//                    },
+//                    bubbleEvents: ['typeselected'],
+//                    readyEvent: 'ready',
+//                    handlesEvents: {
+//                        projectscopechanged: function (context) {
+//                            this.refreshWithNewContext(context);
+//                        }
+//                    }
+//                },
                 // {
                 //     xtype: 'rallyfieldpicker',
                 //     name: 'columnNames',
@@ -1342,7 +1342,6 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            type: ['hierarchicalrequirement','defect'],
             columnNames: ['FormattedID','Name'],
             showControls: true
         }
@@ -1375,12 +1374,12 @@ Ext.define("PPIC", {
         return this.gridboard;
     },
     getModelNames: function(){
-        var models = this.getSetting('type') || [];
-        if (!(models instanceof Array)){
-            models = models.split(',');
-        }
-        return models;  
-        //return ['HierarchicalRequirement','Defect'];     
+        return ['userstory','defect'];
+//        var models = this.getSetting('type') || [];
+//        if (!(models instanceof Array)){
+//            models = models.split(',');
+//        }
+//        return models;  
     },
     addComponents: function(){
         this.logger.log('addComponents',this.portfolioItemTypes);

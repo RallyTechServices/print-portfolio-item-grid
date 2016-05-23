@@ -8,7 +8,6 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            type: ['hierarchicalrequirement','defect'],
             columnNames: ['FormattedID','Name'],
             showControls: true
         }
@@ -41,12 +40,12 @@ Ext.define("PPIC", {
         return this.gridboard;
     },
     getModelNames: function(){
-        var models = this.getSetting('type') || [];
-        if (!(models instanceof Array)){
-            models = models.split(',');
-        }
-        return models;  
-        //return ['HierarchicalRequirement','Defect'];     
+        return ['userstory','defect'];
+//        var models = this.getSetting('type') || [];
+//        if (!(models instanceof Array)){
+//            models = models.split(',');
+//        }
+//        return models;  
     },
     addComponents: function(){
         this.logger.log('addComponents',this.portfolioItemTypes);
