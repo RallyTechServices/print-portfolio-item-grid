@@ -124,6 +124,10 @@ Ext.define("PPIC", {
                 this.models = _.transform(models, function (result, value) {
                     result.push(value);
                 }, []);
+                
+                var fetch_fields = Ext.clone(Rally.technicalservices.CardConfiguration.fetchFields);
+                
+                
 
                 this.modelNames = _.keys(models);
                 Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
@@ -131,7 +135,7 @@ Ext.define("PPIC", {
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
                     enableHierarchy: false,
-                    fetch: this.columns, //this.columnNames,
+                    fetch: Ext.Array.merge(fetch_fields,this.columns), //this.columnNames,
                     models: this.getModelNames(),//_.clone(this.models),
                     pageSize: 25,
                     remoteSort: true,
@@ -218,35 +222,39 @@ Ext.define("PPIC", {
         if (!this.portfolioItem || this.portfolioItem.get('ObjectID') == 0){
             return [];
         }
+        var selected_pi = this.portfolioItem;
+        var selected_oid = selected_pi.get('ObjectID');
+        
         //First verify that the selected portfolio item type is an ancestor to the selected grid type.
-        var pi_types = _.map(this.portfolioItemTypes, function(pi){return pi.typePath.toLowerCase()}),
-            idx = _.indexOf(pi_types, this.portfolioItem.get('_type').toLowerCase()),
-            type_idx = _.indexOf(pi_types, this.getSetting('type').toLowerCase());
-        this.logger.log('_getPortfolioItemFilter', type_idx, idx)
-        if (type_idx < idx) {
-            var properties = [];
-            for (var i = type_idx; i < idx; i++) {
-                if (i < 0) {
-                    properties.push("PortfolioItem");
-                } else {
-                    properties.push('Parent');
-                }
+        var pi_types = _.map(this.portfolioItemTypes, function(pi){return pi.typePath.toLowerCase()});
+        var idx = _.indexOf(pi_types, selected_pi.get('_type').toLowerCase());
+        
+        this.logger.log("index of PI Type:", selected_pi.get('_type'), idx);
+        
+        var filter_array = [];
+        
+        var lowest_pi_name = this.portfolioItemTypes[0].name;
+        this.logger.log("Lowest PI Name:", lowest_pi_name);
+        
+        Ext.Array.each(pi_types, function(type,idx){
+            var story_property = lowest_pi_name;
+            var defect_property = 'Requirement.' + lowest_pi_name;
+            
+            for ( var i=0; i<idx; i++ ) {
+                story_property += '.Parent';
+                //defect_property += '.Parent';
             }
-            this.logger.log('_getPortfolioItemFilter', properties);
-            return Ext.create('Rally.data.wsapi.Filter', {
-                property: properties.join('.'),
-                value: this.portfolioItem.get('_ref')
-            });
-        } else if (type_idx === idx){
-            return Ext.create('Rally.data.wsapi.Filter', {
-                property: 'ObjectID',
-                value: this.portfolioItem.get('ObjectID')
-            });
-        } else {
-            Rally.ui.notify.Notifier.showError({message: "The selected type for the grid results is an ancestor to the selected portfolio item."});
-            return [{property: 'ObjectID', value: 0}];
-        }
-        return [];
+            
+            story_property += ".ObjectID";
+            //defect_property += ".ObjectID";
+            
+            filter_array.push({property:story_property, value:selected_oid});
+            //filter_array.push({property:defect_property,value:selected_oid});
+        });
+        
+        this.logger.log("filter array:", filter_array);
+        
+        return Rally.data.wsapi.Filter.or(filter_array);
     },
     
     addGridBoard: function (store) {

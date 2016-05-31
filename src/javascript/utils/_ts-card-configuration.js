@@ -2,7 +2,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
     singleton: true,
 
     fetchFields: ["FormattedID","Name","Feature","Description",
-        "Release","PlanEstimate",'c_ExtID01QCRequirement','Requirement','Project'],
+        "Release","PlanEstimate",'c_ExtID01QCRequirement','c_ExtID01QCBug','Requirement','Project'],
                 
     displayFields: {
         r1left: { 
