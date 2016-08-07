@@ -126,15 +126,13 @@ Ext.define("PPIC", {
                 }, []);
                 
                 var fetch_fields = Ext.clone(Rally.technicalservices.CardConfiguration.fetchFields);
-                
-                
-
+              
                 this.modelNames = _.keys(models);
                 Ext.create('Rally.data.wsapi.TreeStoreBuilder').build({
                     autoLoad: false,
                     childPageSizeEnabled: true,
                     context: this.getContext().getDataContext(),
-                    enableHierarchy: false,
+                    enableHierarchy: true,
                     fetch: Ext.Array.merge(fetch_fields,this.columns), //this.columnNames,
                     models: this.getModelNames(),//_.clone(this.models),
                     pageSize: 25,
