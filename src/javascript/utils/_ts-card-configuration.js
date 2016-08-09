@@ -2,7 +2,8 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
     singleton: true,
 
     fetchFields: ["FormattedID","Name","Feature","Description",
-        "Release","PlanEstimate",'c_ExtID01QCRequirement','c_ExtID01QCBug','Requirement','Project'],
+        "Release","PlanEstimate",'c_ExtID01QCRequirement','c_ExtID01QCBug',
+        'Requirement','Project','WorkProduct','Owner'],
                 
     displayFields: {
         r1left: { 
@@ -11,11 +12,15 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         r1middle: {
             dataIndex: function(recordData) {
                 var feature = recordData.get('Feature');
-                console.log(recordData);
                 
                 if ( recordData.get('_type') == 'defect' && recordData.get('Requirement') ) {
                     feature = recordData.get('Requirement').Feature;
                 }
+                
+                if ( recordData.get('_type') == 'task' && recordData.get('WorkProduct') ) {
+                    feature = recordData.get('WorkProduct');
+                }
+                
                 if ( Ext.isEmpty(feature) ) {
                     return ' ';
                 }
@@ -27,6 +32,10 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         r1right: {
             dataIndex: function(recordData){   
                 var release = recordData.get('Release');
+                if ( recordData.get('_type') == 'task' && recordData.get('WorkProduct') ) {
+                    release = recordData.get('WorkProduct').Release;
+                }
+                
                 var release_name = "No Release";
                 if ( !Ext.isEmpty(release) ) {
                     release_name = release.Name;
@@ -48,16 +57,18 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3left: {
             dataIndex: function(recordData) {
-                //console.log('>>>>>>>>>',recordData.get('_type'));
                 var qc_id = "";
+                console.log('--', recordData);
                 
                 if(recordData.get('_type')=="hierarchicalrequirement"){
-                    qc_id = recordData.get('c_ExtID01QCRequirement');
+                    qc_id = 'QC: ' + recordData.get('c_ExtID01QCRequirement');
                 }else if(recordData.get('_type')=="defect"){
-                    qc_id = recordData.get('c_ExtID01QCBug');
+                    qc_id = 'QC: ' + recordData.get('c_ExtID01QCBug');
+                }else if(recordData.get('_type')=="task") {
+                    qc_id = recordData.get('Owner') && recordData.get('Owner')._refObjectName;
                 }
                
-                return 'QC: ' + qc_id;
+                return qc_id;
             }
         },
         r3middle: {
