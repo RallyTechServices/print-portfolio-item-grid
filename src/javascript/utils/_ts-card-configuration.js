@@ -3,7 +3,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
 
     fetchFields: ["FormattedID","Name","Feature","Description",
         "Release","PlanEstimate",'c_ExtID01QCRequirement','c_ExtID01QCBug',
-        'Requirement','Project','WorkProduct','Owner'],
+        'Requirement','Project','WorkProduct','Owner','Estimate'],
                 
     displayFields: {
         r1left: { 
@@ -78,7 +78,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3right: {
             dataIndex: function(recordData) {
-                return recordData.get('PlanEstimate');
+                return recordData.get('PlanEstimate') || recordData.get('Estimate');
             }
         }
         
