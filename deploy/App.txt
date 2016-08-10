@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Sun Aug 07 2016 11:48:05 GMT-0700 (PDT) -->
+    <!--  Build Date: Tue Aug 09 2016 17:16:16 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Sun Aug 07 2016 11:48:05 GMT-0700 (PDT)";
-        var CHECKSUM = 57604132340;
+        var APP_BUILD_DATE = "Tue Aug 09 2016 17:16:16 GMT-0700 (PDT)";
+        var CHECKSUM = 57732222781;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -234,7 +234,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
 
     fetchFields: ["FormattedID","Name","Feature","Description",
         "Release","PlanEstimate",'c_ExtID01QCRequirement','c_ExtID01QCBug',
-        'Requirement','Project','WorkProduct','Owner'],
+        'Requirement','Project','WorkProduct','Owner','Estimate'],
                 
     displayFields: {
         r1left: { 
@@ -309,7 +309,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3right: {
             dataIndex: function(recordData) {
-                return recordData.get('PlanEstimate');
+                return recordData.get('PlanEstimate') || recordData.get('Estimate');
             }
         }
         
