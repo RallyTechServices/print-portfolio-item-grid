@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Tue Aug 09 2016 17:16:16 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon Aug 22 2016 15:36:55 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Tue Aug 09 2016 17:16:16 GMT-0700 (PDT)";
-        var CHECKSUM = 57732222781;
+        var APP_BUILD_DATE = "Mon Aug 22 2016 15:36:55 GMT-0700 (PDT)";
+        var CHECKSUM = 63843807367;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -375,6 +375,137 @@ Ext.define('Rally.technicalservices.CardTemplate',{
                 displayFields: config.displayFields
             }
         ]);
+    }
+});
+Ext.define('CA.techservices.gridboard.TSGridboardFieldPicker',{
+    extend: 'Rally.ui.gridboard.plugin.GridBoardFieldPicker',
+    alias: 'plugin.tsgridboardfieldpicker',
+
+    /**
+     * @cfg {String[]}
+     * 
+     * A list of fields that are defined by the admin to be defaults --
+     * if this is not empty, the Default button is added to the popover.
+     */
+    defaultFields: [],
+    
+    _createPopover: function(popoverTarget) {
+        this.boardFieldBlackList = _.union(this.boardFieldBlackList,
+            Rally.ui.grid.FieldColumnFactory.getBlackListedFieldsForTypes(this._getModelTypes()));
+        this.gridFieldBlackList = _.union(Rally.ui.grid.FieldColumnFactory.getBlackListedFieldsForTypes(this._getModelTypes()),
+            this.gridFieldBlackList);
+        
+        var buttons = this._getButtons();
+        
+        this.popover = Ext.create('Rally.ui.popover.Popover', {
+            target: popoverTarget,
+            placement: ['bottom', 'left', 'top', 'right'],
+            cls: 'field-picker-popover',
+            toFront: Ext.emptyFn,
+            buttonAlign: 'center',
+            title: this.getTitle(),
+            minButtonWidth: 50,
+            listeners: {
+                destroy: function () {
+                    this.popover = null;
+                },
+                scope: this
+            },
+            buttons: buttons,
+            items: [
+                _.extend({
+                    xtype: 'rallyfieldpicker',
+                    cls: 'field-picker',
+                    itemId: 'fieldpicker',
+                    modelTypes: this._getModelTypes(),
+                    alwaysExpanded: true,
+                    width: 200,
+                    emptyText: 'Search',
+                    selectedTextLabel: 'Selected',
+                    availableTextLabel: 'Available',
+                    listeners: {
+                        specialkey: function(field, e) {
+                            if (e.getKey() === e.ESC) {
+                                this.popover.close();
+                            }
+                        },
+                        scope: this
+                    }
+                }, this._getPickerConfig())
+            ]
+        });
+    },
+    
+    _getButtons: function() {
+        var buttons = [
+            {
+                xtype: "rallybutton",
+                text: 'Apply',
+                cls: 'field-picker-apply-btn primary rly-small',
+                listeners: {
+                    click: function() {
+                        this._onApply(this.popover);
+                    },
+                    scope: this
+                }
+            },
+            {
+                xtype: "rallybutton",
+                text: 'Cancel',
+                cls: 'field-picker-cancel-btn secondary dark rly-small',
+                listeners: {
+                    click: function() {
+                        this.popover.close();
+                    },
+                    scope: this
+                }
+            }
+        ];
+        
+        if ( this.defaultFields && this.defaultFields.length > 0 ) {
+            
+            buttons.push({
+                xtype: "rallybutton",
+                text: 'Defaults',
+                cls: 'field-picker-cancel-btn secondary dark rly-small',
+                listeners: {
+                    click: function() {
+                        this._setValues(this.popover,this.defaultFields);
+                        //this._onApply(this.popover);
+                    },
+                    scope: this
+                }
+            });
+        }
+        
+        return buttons;
+    },
+    
+    _setValues: function(popover,default_fields) {
+        if ( Ext.isString(default_fields) ) { default_fields = default_fields.split(',');}
+        
+        var picker = popover.down('rallyfieldpicker');
+        if ( Ext.isEmpty(picker) ) { return; }
+        
+        console.log(default_fields);
+        
+        picker.selectedValues = Ext.create('Ext.util.MixedCollection');
+//        if (picker.isExpanded) {
+//            picker._onListRefresh();
+//            picker._groupSelectedRecords();
+//        }
+
+        var store = picker.getStore();
+        
+        Ext.Array.each(store.getRange(), function(item){
+            if ( Ext.Array.contains(default_fields, item.get('name') ) )  {
+                picker.select(item);
+            }
+        });
+        
+        picker._onListRefresh();
+        picker._groupSelectedRecords();
+        
     }
 });
 Ext.override(Rally.ui.grid.TreeGrid,{
@@ -801,58 +932,20 @@ Ext.define('portfolio-item-selector', {
                     //     }
                     // }
                 },
-//                {
-//                    name: 'type',
-//                    xtype: 'rallycombobox',
-//                    allowBlank: false,
-//                    autoSelect: false,
-//                    multiSelect: true,
-//                    shouldRespondToScopeChange: true,
-//                    fieldLabel: 'Results Type',
-//                    context: context,
-//                    initialValue: 'HierarchicalRequirement',
-//                    storeConfig: {
-//                        model: Ext.identityFn('TypeDefinition'),
-//                        sorters: [{ property: 'DisplayName' }],
-//                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
-//                        filters: type_filters,
-//                        autoLoad: false,
-//                        remoteSort: false,
-//                        remoteFilter: true
-//                    },
-//                    displayField: 'DisplayName',
-//                    valueField: 'TypePath',
-//                    listeners: {
-//                        setvalue: function() {
-//                            if ( this.getRecord() ) {
-//                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
-//                            }
-////                        },
-////                        change: function (combo) {
-////                            console.log('changed');
-////                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
-//                        }
-//                    },
-//                    bubbleEvents: ['typeselected'],
-//                    readyEvent: 'ready',
-//                    handlesEvents: {
-//                        projectscopechanged: function (context) {
-//                            this.refreshWithNewContext(context);
-//                        }
-//                    }
-//                },
-                // {
-                //     xtype: 'rallyfieldpicker',
-                //     name: 'columnNames',
-                //     autoExpand: true,
-                //     modelTypes: ['HierarchicalRequirement'],
-                //     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
-                //     handlesEvents: {
-                //         typeselected: function(cb){
-                //             this.refreshWithNewModelTypes([cb]);
-                //         }
-                //     }
-                // },
+                
+                 {
+                     xtype: 'rallyfieldpicker',
+                     name: 'defaultColumnNames',
+                     fieldLabel: 'Default Columns',
+                     autoExpand: true,
+                     modelTypes: ['Defect','HierarchicalRequirement'],
+                     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                     handlesEvents: {
+                         typeselected: function(cb){
+                             this.refreshWithNewModelTypes([cb]);
+                         }
+                     }
+                 },
                 { type: 'query' },
                 {
                     name: 'showControls',
@@ -1093,7 +1186,7 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            columnNames: ['FormattedID','Name'],
+            defaultColumnNames: ['FormattedID','Name'],
             showControls: true
         }
     },
@@ -1357,9 +1450,10 @@ Ext.define("PPIC", {
             context: this.getContext(),
             stateful: false,
             plugins:[{
-                ptype: 'rallygridboardfieldpicker',
+                ptype: 'tsgridboardfieldpicker',
                 headerPosition: 'left',
-                margin: '3 0 0 10'
+                margin: '3 0 0 10',
+                defaultFields: this.getSetting('defaultColumnNames')
             },
             {
                 ptype: 'rallygridboardinlinefiltercontrol',
@@ -1395,6 +1489,14 @@ Ext.define("PPIC", {
                     items: [{
                         xtype: 'tsbulkrecordmenuitem'
                     }]
+                },
+                listeners: {
+                    columnschanged: function(g) {
+                        console.log('columnschanged');
+                    },
+                    reconfigure: function(g) {
+                        console.log('reconfigure');
+                    }
                 }
             }
         });
@@ -1447,7 +1549,8 @@ Ext.define("PPIC", {
     },
 
     _getColumns: function() {
-        return this._getAlwaysSelectedFields();
+        return [];
+        //return this._getAlwaysSelectedFields();
     },
     
     _shouldEnableAddNew: function() {
