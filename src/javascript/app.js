@@ -8,7 +8,7 @@ Ext.define("PPIC", {
         defaultSettings: {
             showScopeSelector: true,
             selectorType: null,
-            columnNames: ['FormattedID','Name'],
+            defaultColumnNames: ['FormattedID','Name'],
             showControls: true
         }
     },
@@ -272,9 +272,10 @@ Ext.define("PPIC", {
             context: this.getContext(),
             stateful: false,
             plugins:[{
-                ptype: 'rallygridboardfieldpicker',
+                ptype: 'tsgridboardfieldpicker',
                 headerPosition: 'left',
-                margin: '3 0 0 10'
+                margin: '3 0 0 10',
+                defaultFields: this.getSetting('defaultColumnNames')
             },
             {
                 ptype: 'rallygridboardinlinefiltercontrol',
@@ -362,7 +363,8 @@ Ext.define("PPIC", {
     },
 
     _getColumns: function() {
-        return this._getAlwaysSelectedFields();
+        return [];
+        //return this._getAlwaysSelectedFields();
     },
     
     _shouldEnableAddNew: function() {

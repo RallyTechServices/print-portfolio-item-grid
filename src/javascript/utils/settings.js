@@ -63,58 +63,24 @@
                     //     }
                     // }
                 },
-//                {
-//                    name: 'type',
-//                    xtype: 'rallycombobox',
-//                    allowBlank: false,
-//                    autoSelect: false,
-//                    multiSelect: true,
-//                    shouldRespondToScopeChange: true,
-//                    fieldLabel: 'Results Type',
-//                    context: context,
-//                    initialValue: 'HierarchicalRequirement',
-//                    storeConfig: {
-//                        model: Ext.identityFn('TypeDefinition'),
-//                        sorters: [{ property: 'DisplayName' }],
-//                        fetch: ['DisplayName', 'ElementName', 'TypePath', 'Parent', 'UserListable'],
-//                        filters: type_filters,
-//                        autoLoad: false,
-//                        remoteSort: false,
-//                        remoteFilter: true
-//                    },
-//                    displayField: 'DisplayName',
-//                    valueField: 'TypePath',
-//                    listeners: {
-//                        setvalue: function() {
-//                            if ( this.getRecord() ) {
-//                                this.fireEvent('typeselected', this.getRecord().get('TypePath'), this.context);
-//                            }
-////                        },
-////                        change: function (combo) {
-////                            console.log('changed');
-////                            combo.fireEvent('typeselected', combo.getRecord().get('TypePath'), combo.context);
-//                        }
-//                    },
-//                    bubbleEvents: ['typeselected'],
-//                    readyEvent: 'ready',
-//                    handlesEvents: {
-//                        projectscopechanged: function (context) {
-//                            this.refreshWithNewContext(context);
-//                        }
-//                    }
-//                },
-                // {
-                //     xtype: 'rallyfieldpicker',
-                //     name: 'columnNames',
-                //     autoExpand: true,
-                //     modelTypes: ['HierarchicalRequirement'],
-                //     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
-                //     handlesEvents: {
-                //         typeselected: function(cb){
-                //             this.refreshWithNewModelTypes([cb]);
-                //         }
-                //     }
-                // },
+                
+                 {
+                     xtype: 'rallyfieldpicker',
+                     name: 'defaultColumnNames',
+                     fieldLabel: 'Default Columns',
+                     autoExpand: true,
+                     modelTypes: ['Defect','HierarchicalRequirement'],
+                     alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                     fieldBlackList: ['ChangeSets','Defects','Tasks','Attachments','Children',
+                        'Dependencies','Predecessors','Successors','Duplicates','Milestones',
+                        'ObjectUUID','ObjectID','RevisionHistory','ScheduleStatePrefix',
+                        'Subscription','TestCases','VersionId','Workspace'],
+                     handlesEvents: {
+                         typeselected: function(cb){
+                             this.refreshWithNewModelTypes([cb]);
+                         }
+                     }
+                 },
                 { type: 'query' },
                 {
                     name: 'showControls',

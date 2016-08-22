@@ -1,6 +1,10 @@
 #Print Portfolio Item Grid
 
+
 ## Development Notes
+ * Interesting subclassed: the field chooser plugin is subclassed so that the 
+admin can add default fields and an additional button will appear to allow reverting
+to defect.
 
 ### First Load
 
