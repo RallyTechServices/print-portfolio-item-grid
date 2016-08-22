@@ -108,8 +108,6 @@ Ext.define('CA.techservices.gridboard.TSGridboardFieldPicker',{
         var picker = popover.down('rallyfieldpicker');
         if ( Ext.isEmpty(picker) ) { return; }
         
-        console.log(default_fields);
-        
         picker.selectedValues = Ext.create('Ext.util.MixedCollection');
 //        if (picker.isExpanded) {
 //            picker._onListRefresh();

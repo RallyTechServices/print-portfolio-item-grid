@@ -71,6 +71,10 @@
                      autoExpand: true,
                      modelTypes: ['Defect','HierarchicalRequirement'],
                      alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                     fieldBlackList: ['ChangeSets','Defects','Tasks','Attachments','Children',
+                        'Dependencies','Predecessors','Successors','Duplicates','Milestones',
+                        'ObjectUUID','ObjectID','RevisionHistory','ScheduleStatePrefix',
+                        'Subscription','TestCases','VersionId','Workspace'],
                      handlesEvents: {
                          typeselected: function(cb){
                              this.refreshWithNewModelTypes([cb]);

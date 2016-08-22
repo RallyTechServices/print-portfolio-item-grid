@@ -311,14 +311,6 @@ Ext.define("PPIC", {
                     items: [{
                         xtype: 'tsbulkrecordmenuitem'
                     }]
-                },
-                listeners: {
-                    columnschanged: function(g) {
-                        console.log('columnschanged');
-                    },
-                    reconfigure: function(g) {
-                        console.log('reconfigure');
-                    }
                 }
             }
         });

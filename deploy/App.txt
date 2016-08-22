@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon Aug 22 2016 15:36:55 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon Aug 22 2016 15:48:25 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon Aug 22 2016 15:36:55 GMT-0700 (PDT)";
-        var CHECKSUM = 63843807367;
+        var APP_BUILD_DATE = "Mon Aug 22 2016 15:48:25 GMT-0700 (PDT)";
+        var CHECKSUM = 64171955873;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -487,8 +487,6 @@ Ext.define('CA.techservices.gridboard.TSGridboardFieldPicker',{
         var picker = popover.down('rallyfieldpicker');
         if ( Ext.isEmpty(picker) ) { return; }
         
-        console.log(default_fields);
-        
         picker.selectedValues = Ext.create('Ext.util.MixedCollection');
 //        if (picker.isExpanded) {
 //            picker._onListRefresh();
@@ -940,6 +938,10 @@ Ext.define('portfolio-item-selector', {
                      autoExpand: true,
                      modelTypes: ['Defect','HierarchicalRequirement'],
                      alwaysSelectedValues: ['FormattedID','DragAndDropRank','Rank','Name'],
+                     fieldBlackList: ['ChangeSets','Defects','Tasks','Attachments','Children',
+                        'Dependencies','Predecessors','Successors','Duplicates','Milestones',
+                        'ObjectUUID','ObjectID','RevisionHistory','ScheduleStatePrefix',
+                        'Subscription','TestCases','VersionId','Workspace'],
                      handlesEvents: {
                          typeselected: function(cb){
                              this.refreshWithNewModelTypes([cb]);
@@ -1489,14 +1491,6 @@ Ext.define("PPIC", {
                     items: [{
                         xtype: 'tsbulkrecordmenuitem'
                     }]
-                },
-                listeners: {
-                    columnschanged: function(g) {
-                        console.log('columnschanged');
-                    },
-                    reconfigure: function(g) {
-                        console.log('reconfigure');
-                    }
                 }
             }
         });
