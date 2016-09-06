@@ -299,6 +299,7 @@ Ext.define("PPIC", {
             storeConfig: {
                 filters: filters
             },
+            
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,

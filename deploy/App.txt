@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Mon Aug 22 2016 15:48:25 GMT-0700 (PDT) -->
+    <!--  Build Date: Mon Sep 05 2016 17:52:48 GMT-0700 (PDT) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Mon Aug 22 2016 15:48:25 GMT-0700 (PDT)";
-        var CHECKSUM = 64171955873;
+        var APP_BUILD_DATE = "Mon Sep 05 2016 17:52:48 GMT-0700 (PDT)";
+        var CHECKSUM = 64189922299;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -559,7 +559,6 @@ Ext.override(Rally.ui.grid.TreeGrid,{
         }
     }
 });
-
 
 Ext.define('Rally.technicalservices.window.PrintCards',{
     extend: 'Ext.Window',
@@ -1479,6 +1478,7 @@ Ext.define("PPIC", {
             storeConfig: {
                 filters: filters
             },
+            
             gridConfig: {
                 // allColumnsStateful: true,
                 stateful: true,
@@ -1754,7 +1754,7 @@ body {
     word-wrap: break-word;
 }
 
-.owner {
+.ownerBlock {
     float: right;
     height: 40px;
 }
