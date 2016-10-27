@@ -71,9 +71,14 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
                 return qc_id;
             }
         },
-        r3middle: {
+        r3middleleft: {
             dataIndex: function(recordData) {
-                return recordData.get('Project').Name;
+                return Ext.String.ellipsis(recordData.get('Project').Name, 35);
+            }
+        },
+        r3middleright: {
+            dataIndex: function(recordData) {
+                return  Ext.String.ellipsis(recordData.get('Owner') && recordData.get('Owner').Name, 35) || "No Owner";
             }
         },
         r3right: {
