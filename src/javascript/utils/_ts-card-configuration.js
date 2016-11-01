@@ -78,7 +78,7 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
         },
         r3middleright: {
             dataIndex: function(recordData) {
-                return  Ext.String.ellipsis(recordData.get('Owner') && recordData.get('Owner').Name, 35) || "No Owner";
+                return  Ext.String.ellipsis(recordData.get('Owner') && recordData.get('Owner')._refObjectName, 35) || "No Owner";
             }
         },
         r3right: {
