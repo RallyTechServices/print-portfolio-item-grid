@@ -68,6 +68,7 @@ body {
     padding-left: 0.5em;
     overflow: hidden;
     width: 1.75in;
+    font: 10pt Arial, Helvetica, sans-serif;    
     border-right: 1px solid #000;
 }
 

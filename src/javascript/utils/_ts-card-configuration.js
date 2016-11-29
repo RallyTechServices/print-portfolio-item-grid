@@ -25,10 +25,10 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
                     return ' ';
                 }
                 
-                return feature.FormattedID + ": " + Ext.util.Format.substr(feature.Name,0,5);
-            },
-            maxLength: 12
+                return feature.FormattedID + ": " + Ext.util.Format.substr(feature.Name,0,25);
+            }
         },
+
         r1right: {
             dataIndex: function(recordData){   
                 var release = recordData.get('Release');
