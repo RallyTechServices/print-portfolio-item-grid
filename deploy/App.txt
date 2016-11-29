@@ -3,11 +3,11 @@
 <head>
     <title>Print Portfolio Item Grid</title>
     <!--  (c) 2015,2016 CA Technologies.  All Rights Reserved. -->
-    <!--  Build Date: Tue Nov 01 2016 10:56:19 GMT-0600 (MDT) -->
+    <!--  Build Date: Mon Nov 28 2016 16:07:32 GMT-0800 (PST) -->
     
     <script type="text/javascript">
-        var APP_BUILD_DATE = "Tue Nov 01 2016 10:56:19 GMT-0600 (MDT)";
-        var CHECKSUM = 66517986512;
+        var APP_BUILD_DATE = "Mon Nov 28 2016 16:07:32 GMT-0800 (PST)";
+        var CHECKSUM = 66602180451;
     </script>
     
     <script type="text/javascript" src="/apps/2.1/sdk.js"></script>
@@ -256,10 +256,10 @@ Ext.define('Rally.technicalservices.CardConfiguration',{
                     return ' ';
                 }
                 
-                return feature.FormattedID + ": " + Ext.util.Format.substr(feature.Name,0,5);
-            },
-            maxLength: 12
+                return feature.FormattedID + ": " + Ext.util.Format.substr(feature.Name,0,25);
+            }
         },
+
         r1right: {
             dataIndex: function(recordData){   
                 var release = recordData.get('Release');
@@ -1645,6 +1645,7 @@ body {
     padding-left: 0.5em;
     overflow: hidden;
     width: 1.75in;
+    font: 10pt Arial, Helvetica, sans-serif;    
     border-right: 1px solid #000;
 }
 
